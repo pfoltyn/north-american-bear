@@ -20,6 +20,41 @@ public class MainCodeLoop : MonoBehaviour
     private Dictionary<char, Mesh> letterToMesh;
     private string[] words;
 
+	private void InitLetters()
+	{
+		int wordIndex = Random.Range(0, words.Length);
+		int smallLetterIndex = 0;
+		HashSet<int> bigLetterIndices = new HashSet<int>(Enumerable.Range(0, bigLetters.Length));
+		int bigLetterIndex = bigLetterIndices.ToArray()[Random.Range(0, bigLetterIndices.Count)];
+		foreach (var c in words[wordIndex])
+		{
+			if (c == '\r')
+			{
+				break;
+			}
+			
+			if (letterToMesh.ContainsKey(c))
+			{
+				MeshFilter meshFilter = bigLetters[bigLetterIndex].GetComponent<MeshFilter>();
+				meshFilter.mesh = letterToMesh[c];
+				
+				meshFilter = smallLetters[smallLetterIndex].GetComponent<MeshFilter>();
+				meshFilter.mesh = letterToMesh[c];
+			}
+			else
+			{
+				Debug.Log(string.Format("Character {0} not found in dictionary.", c));
+			}
+			
+			smallLetterIndex++;
+			bigLetterIndices.Remove(bigLetterIndex);
+			if (bigLetterIndices.Count > 0)
+			{
+				bigLetterIndex = bigLetterIndices.ToArray()[Random.Range(0, bigLetterIndices.Count)];
+			}
+		}
+	}
+
     // Use this for initialization
     void Start()
     {
@@ -30,37 +65,12 @@ public class MainCodeLoop : MonoBehaviour
 			letterToMesh[entry.letter[0]] = entry.mesh;
         }
 
-        int wordIndex = Random.Range(0, words.Length);
-        int smallLetterIndex = 0;
-		HashSet<int> bigLetterIndices = new HashSet<int>(Enumerable.Range(0, bigLetters.Length));
-		int bigLetterIndex = bigLetterIndices.ToArray()[Random.Range(0, bigLetterIndices.Count)];
-        foreach (var c in words[wordIndex])
-        {
-            if (c == '\r')
-            {
-                break;
-            }
+		InitLetters();
 
-            if (letterToMesh.ContainsKey(c))
-            {
-				MeshFilter meshFilter = bigLetters[bigLetterIndex].GetComponent<MeshFilter>();
-				meshFilter.mesh = letterToMesh[c];
-
-				meshFilter = smallLetters[smallLetterIndex].GetComponent<MeshFilter>();
-				meshFilter.mesh = letterToMesh[c];
-            }
-            else
-            {
-                Debug.Log(string.Format("Character {0} not found in dictionary.", c));
-            }
-
-			smallLetterIndex++;
-			bigLetterIndices.Remove(bigLetterIndex);
-			if (bigLetterIndices.Count > 0)
-			{
-				bigLetterIndex = bigLetterIndices.ToArray()[Random.Range(0, bigLetterIndices.Count)];
-			}
-        }
+		foreach (var letterObj in bigLetters) {
+			Animator animator = letterObj.GetComponent<Animator>();
+			animator.SetFloat("Speed", Random.Range(0f, 1f));
+		}
     }
 
     // Update is called once per frame
