@@ -67,7 +67,8 @@ public class MainCodeLoop : MonoBehaviour
 
 		InitLetters();
 
-		foreach (var letterObj in bigLetters) {
+		foreach (var letterObj in bigLetters)
+		{
 			Animator animator = letterObj.GetComponent<Animator>();
 			animator.SetFloat("Speed", Random.Range(0f, 1f));
 		}
@@ -76,6 +77,23 @@ public class MainCodeLoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+		{
+			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+			RaycastHit hit;
+			
+			if (Physics.Raycast(ray, out hit))
+			{
+				hit.collider.GetComponent<Animator>().SetBool("Pressed", true);
+			}
+		}
 
+		if (Input.touchCount == 0) {
+			foreach (var letterObj in bigLetters)
+			{
+				Animator animator = letterObj.GetComponent<Animator>();
+				animator.SetBool("Pressed", false);
+			}
+		}
     }
 }
