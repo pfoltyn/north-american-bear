@@ -72,13 +72,18 @@ public class MainCodeLoop : MonoBehaviour
 			letterToMesh[entry.letter[0]] = entry.mesh;
         }
 
-		InitLetters();
-
-		foreach (var letterObj in bigSlots)
+		foreach (var slot in bigSlots)
 		{
-			Animator animator = letterObj.GetComponent<Animator>();
+			Animator animator = slot.GetComponent<Animator>();
 			animator.SetFloat("Speed", Random.Range(0f, 1f));
+
+			MeshFilter meshFilter = slot.GetComponent<MeshFilter>();
+			char letter = (char)Random.Range('a', 'z');
+			meshFilter.mesh = letterToMesh[letter];
+			slotToLetter[slot] = letter;
 		}
+
+		InitLetters();
     }
 
     // Update is called once per frame
