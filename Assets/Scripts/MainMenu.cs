@@ -6,6 +6,8 @@ using System.Collections.Generic;
 public class MainMenu : MonoBehaviour
 {
 	public GameObject[] choiceSlots;
+	public Renderer backgroundRenderer;
+	public AudioSource clickAudio;
 
     // Use this for initialization
     void Start()
@@ -27,11 +29,16 @@ public class MainMenu : MonoBehaviour
 			
 			if (Physics.Raycast(ray, out hit))
 			{
+				clickAudio.Play();
 				Animator animator = hit.collider.GetComponent<Animator>();
 				animator.SetBool("Pressed", true);
 				if (choiceSlots[0] == animator.gameObject)
 				{
 					Application.LoadLevel("4letters");
+				}
+				else if (choiceSlots[1] == animator.gameObject)
+				{
+					Application.LoadLevel("5letters_easy");
 				}
 				else
 				{

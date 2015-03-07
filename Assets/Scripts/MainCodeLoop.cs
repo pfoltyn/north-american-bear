@@ -9,6 +9,11 @@ public class MainCodeLoop : MonoBehaviour
 	public GameObject[] bigSlots;
 	public GameObject[] smallSlots;
 	public GameObject[] scoreSlots;
+	public Texture[] textures;
+	public Renderer backgroundRenderer;
+	public AudioSource failAudio;
+	public AudioSource successAudio;
+	public AudioSource clickAudio;
 
     [System.Serializable]
     public class LetterToMeshEntry
@@ -84,6 +89,9 @@ public class MainCodeLoop : MonoBehaviour
 		}
 
 		InitLetters();
+
+		Texture texture = textures[Random.Range(0, textures.Length)];
+		backgroundRenderer.material.mainTexture = texture;
     }
 
     // Update is called once per frame
@@ -96,8 +104,13 @@ public class MainCodeLoop : MonoBehaviour
 			
 			if (Physics.Raycast(ray, out hit))
 			{
+				clickAudio.Play();
 				Animator animator = hit.collider.GetComponent<Animator>();
-				if (animator.GetBool("Pressed") == false)
+				if (!animator)
+				{
+					Application.LoadLevel("menu");
+				}
+				else if (animator.GetBool("Pressed") == false)
 				{
 					animator.SetBool("Pressed", true);
 					char letter = slotToLetter[hit.collider.gameObject];
@@ -123,6 +136,7 @@ public class MainCodeLoop : MonoBehaviour
 
 			if (System.Array.IndexOf(words, word + '\r') >= 0)
 			{
+				successAudio.Play();
 				InitLetters();
 				score++;
 				// HACK! Need to make it scale to more than two digits.
@@ -131,6 +145,10 @@ public class MainCodeLoop : MonoBehaviour
 					scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score / 10)];
 					scoreSlots[1].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score % 10)];
 				}
+			}
+			else
+			{
+				failAudio.Play();
 			}
 
 			letterIndex = 0;
