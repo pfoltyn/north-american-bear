@@ -29,6 +29,8 @@ public class MainCodeLoop : MonoBehaviour
 	private int letterIndex;
 	private string word;
 	private int score;
+	private float scrollSpeedY;
+	private float scrollSpeedX;
 
 	private void InitLetters()
 	{
@@ -66,6 +68,8 @@ public class MainCodeLoop : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		scrollSpeedY = 0.02f;
+		scrollSpeedX = 0.02f;
 		score = 0;
 		word = "";
 		letterIndex = 0;
@@ -97,6 +101,10 @@ public class MainCodeLoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
+		float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
+		backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
+
 		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
