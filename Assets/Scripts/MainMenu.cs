@@ -39,20 +39,24 @@ public class MainMenu : MonoBehaviour
 			if (Physics.Raycast(ray, out hit))
 			{
 				clickAudio.Play();
+				GameObject go = GameObject.FindGameObjectWithTag("Finish");
 				Animator animator = hit.collider.GetComponent<Animator>();
-				animator.SetBool("Pressed", true);
 				if (choiceSlots[0] == animator.gameObject)
 				{
-					Application.LoadLevel("4letters");
+					go.GetComponent<Fader>().nextSceneName = "4letters";
+					go.GetComponent<Fader>().sceneEnding = true;
 				}
 				else if (choiceSlots[1] == animator.gameObject)
 				{
-					Application.LoadLevel("5letters_easy");
+					go.GetComponent<Fader>().nextSceneName = "5letters_easy";
+					go.GetComponent<Fader>().sceneEnding = true;
 				}
 				else
 				{
-					Application.LoadLevel("5letters");
+					go.GetComponent<Fader>().nextSceneName = "5letters";
+					go.GetComponent<Fader>().sceneEnding = true;
 				}
+				animator.SetBool("Pressed", true);
 			}
 		}
     }

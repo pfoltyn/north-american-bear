@@ -166,7 +166,9 @@ public class MainCodeLoop : MonoBehaviour
 					int idx = System.Array.IndexOf(menuItems, hit.collider.gameObject);
 					switch (idx) {
 					case 0:
-						Application.LoadLevel("menu");
+						GameObject go = GameObject.FindGameObjectWithTag("Finish");
+						go.GetComponent<Fader>().nextSceneName = "menu";
+						go.GetComponent<Fader>().sceneEnding = true;
 						break;
 					case 1:
 						ResetPlayersGuess();
