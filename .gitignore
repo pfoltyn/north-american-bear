@@ -20,3 +20,5 @@ sysinfo.txt
 
 # Unity3D generated meta files
 *.pidb.meta
+
+words-ios/Libraries/libiPhone-lib.a
