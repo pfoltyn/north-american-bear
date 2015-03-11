@@ -213,6 +213,7 @@ public class MainCodeLoop : MonoBehaviour
 		float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
 		float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
 		backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
+		backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
 
 		if (Input.touchCount == 0)
 		{
