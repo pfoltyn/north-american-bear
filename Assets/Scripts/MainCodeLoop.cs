@@ -31,6 +31,7 @@ public class MainCodeLoop : MonoBehaviour
 	private float scrollSpeedX;
 	private string word;
 	private int letterIndex;
+	private bool once;
 
 	private int wordIndex;
 	private int seed;
@@ -124,7 +125,7 @@ public class MainCodeLoop : MonoBehaviour
 
 		InitLetters();
 
-		Texture texture = textures[Random.Range(0, textures.Length)];
+		Texture texture = textures[wordIndex % textures.Length];
 		backgroundRenderer.material.mainTexture = texture;
     }
 
@@ -145,53 +146,53 @@ public class MainCodeLoop : MonoBehaviour
 		word = "";
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
-		float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
-		float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
-		backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
+	private void HandleMenuClick(GameObject hitGo)
+	{
+		int idx = System.Array.IndexOf(menuItems, hitGo);
+		switch (idx) {
+		case 0:
+			GameObject go = GameObject.FindGameObjectWithTag("Finish");
+			go.GetComponent<Fader>().Stop(() => Application.LoadLevel("menu"));
+			break;
+		case 1:
+			ResetPlayersGuess();
+			break;
+		case 2:
+			ResetPlayersGuess();
+			char letter = words[wordIndex][0];
+			MeshFilter meshFilter = smallSlots[0].GetComponent<MeshFilter>();
+			meshFilter.mesh = letterToMesh[letter];
+			letterIndex++;
+			word += letter;
+			foreach (var slot in bigSlots) {
+				if (letter == slotToLetter[slot])
+				{
+					Animator animator = slot.GetComponent<Animator>();
+					animator.SetBool("Pressed", true);
+					break;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
 
-		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+	void OnGUI()
+	{
+		if (once && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
 		{
 			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
 			RaycastHit hit;
 			
 			if (Physics.Raycast(ray, out hit))
 			{
+				once = false;
 				clickAudio.Play();
 				Animator animator = hit.collider.GetComponent<Animator>();
 				if (menuItems.Contains(hit.collider.gameObject))
 				{
-					int idx = System.Array.IndexOf(menuItems, hit.collider.gameObject);
-					switch (idx) {
-					case 0:
-						GameObject go = GameObject.FindGameObjectWithTag("Finish");
-						go.GetComponent<Fader>().nextSceneName = "menu";
-						go.GetComponent<Fader>().sceneEnding = true;
-						break;
-					case 1:
-						ResetPlayersGuess();
-						break;
-					case 2:
-						ResetPlayersGuess();
-						char letter = words[wordIndex][0];
-						MeshFilter meshFilter = smallSlots[0].GetComponent<MeshFilter>();
-						meshFilter.mesh = letterToMesh[letter];
-						letterIndex++;
-						word += letter;
-						foreach (var slot in bigSlots) {
-							if (letter == slotToLetter[slot])
-							{
-								animator = slot.GetComponent<Animator>();
-								animator.SetBool("Pressed", true);
-								break;
-							}
-						}
-						break;
-					default:
-					break;
-					}
+					HandleMenuClick(hit.collider.gameObject);
 				}
 				else if (animator.GetBool("Pressed") == false)
 				{
@@ -204,9 +205,22 @@ public class MainCodeLoop : MonoBehaviour
 				}
 			}
 		}
+	}
 
-		if ((Input.touchCount == 0) && (letterIndex >= smallSlots.Length)) {
+    // Update is called once per frame
+    void Update()
+    {
+		float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
+		float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
+		backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
 
+		if (Input.touchCount == 0)
+		{
+			once = true;
+		}
+
+		if (letterIndex >= smallSlots.Length)
+		{
 			if (System.Array.IndexOf(words, word) >= 0)
 			{
 				successAudio.Play();

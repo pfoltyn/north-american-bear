@@ -3,60 +3,52 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class Fader : MonoBehaviour {
-	public float fadeSpeed;
-	public bool sceneEnding;
-	public string nextSceneName;
+	public delegate void OnEndDelegate();
+
+	private float fadeSpeed;
+	private bool sceneEnding;
 	private bool sceneStarting;
-	
+	private Image image;
+	private OnEndDelegate onEnd;
+
 	void Start()
 	{
 		GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height * 2);
 		fadeSpeed = 4.0f;
 		sceneEnding = false;
-		nextSceneName = "";
 		sceneStarting = true;
+		image = GetComponent<Image>();
+	}
+
+	public void Stop(OnEndDelegate onEnd)
+	{
+		sceneStarting = false;
+		sceneEnding = true;
+		image.enabled = true;
+		this.onEnd = onEnd;
 	}
 
 	void Update()
 	{
 		if (sceneStarting)
 		{
-			StartScene();
+			image.color = Color.Lerp(image.color, Color.clear, fadeSpeed * Time.deltaTime);
+			if (image.color.a <= 0.01f)
+			{
+				image.color = Color.clear;
+				image.enabled = false;
+				sceneStarting = false;
+			}
 		}
 		else if (sceneEnding)
 		{
-			EndScene();
-		}
-	}
-	
-	private void FadeToClear()
-	{
-		GetComponent<Image>().color = Color.Lerp(GetComponent<Image>().color, Color.clear, fadeSpeed * Time.deltaTime);
-	}
-
-	private void FadeToBlack()
-	{
-		GetComponent<Image>().color = Color.Lerp(GetComponent<Image>().color, Color.black, fadeSpeed * Time.deltaTime);
-	}
-
-	private void StartScene()
-	{
-		FadeToClear();
-		if(GetComponent<Image>().color.a <= 0.01f)
-		{
-			GetComponent<Image>().color = Color.clear;
-			GetComponent<Image>().enabled = false;
-			sceneStarting = false;
-		}
-	}
-
-	private void EndScene()
-	{
-		GetComponent<Image>().enabled = true;
-		FadeToBlack();
-		if (GetComponent<Image>().color.a >= 0.99f)
-		{
-			Application.LoadLevel(nextSceneName);
+			image.color = Color.Lerp(image.color, Color.black, fadeSpeed * Time.deltaTime);
+			if (image.color.a >= 0.99f)
+			{
+				image.color = Color.black;
+				sceneEnding = false;
+				onEnd();
+			}
 		}
 	}
 }

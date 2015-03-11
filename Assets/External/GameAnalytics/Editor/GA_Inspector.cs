@@ -1754,7 +1754,12 @@ public class GA_Inspector : Editor
 		return enabled;
 	}
 
-	static void Splitter(Color rgb, float thickness = 1)
+	static void Splitter(Color rgb)
+	{
+		Splitter(rgb, 1);
+	}
+
+	static void Splitter(Color rgb, float thickness)
 	{
 		GUIStyle splitter = new GUIStyle();
 		splitter.normal.background = EditorGUIUtility.whiteTexture;
