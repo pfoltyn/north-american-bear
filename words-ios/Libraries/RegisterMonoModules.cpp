@@ -43,6 +43,7 @@ extern "C"
 	extern gpointer*	mono_aot_module_UnityEngine_info; // UnityEngine.dll
 	extern gpointer*	mono_aot_module_mscorlib_info; // mscorlib.dll
 #endif // !(TARGET_IPHONE_SIMULATOR)
+	DECL_USER_FUNC(GetUserID);
 }
 DLL_EXPORT void RegisterMonoModules()
 {
@@ -58,6 +59,7 @@ DLL_EXPORT void RegisterMonoModules()
 	mono_aot_register_module(mono_aot_module_mscorlib_info);
 #endif // !(TARGET_IPHONE_SIMULATOR) && !defined(__arm64__)
 
+	REGISTER_USER_FUNC(GetUserID);
 }
 
 void RegisterAllStrippedInternalCalls ()
