@@ -276,7 +276,7 @@ public class GA_SetupWizard : EditorWindow
 			{
 				if (EditorApplication.SaveCurrentSceneIfUserWantsTo())
 				{
-					EditorApplication.OpenScene("Assets/GameAnalytics/Plugins/Examples/ga_example.unity");
+					EditorApplication.OpenScene("Assets/External/GameAnalytics/Plugins/Examples/ga_example.unity");
 					Close();
 				}
 			}

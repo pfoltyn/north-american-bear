@@ -10,7 +10,7 @@ public class PlayMakerPresenceCheck : AssetPostprocessor{
 	static string IgnorePlayMakerBridgeKey = "IgnorePlayMakerBridge";
 	static string PlayMakerBridgeEnabledKey = "PlayMakerBridgeEnabled";
 
-	static public string PlayMakerDemoPackageFile = "Assets/GameAnalytics/Plugins/Playmaker/Examples/GameAnalyticsPlayMakerDemo.unitypackage";
+	static public string PlayMakerDemoPackageFile = "Assets/External/GameAnalytics/Plugins/Playmaker/Examples/GameAnalyticsPlayMakerDemo.unitypackage";
 
 	static bool _debug = false;
 

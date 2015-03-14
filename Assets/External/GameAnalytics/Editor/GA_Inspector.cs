@@ -92,12 +92,12 @@ public class GA_Inspector : Editor
 		
 		if(ga.UpdateIcon == null)
 		{
-			ga.UpdateIcon = (Texture2D)Resources.LoadAssetAtPath("Assets/Gizmos/Images/update_orange.png", typeof(Texture2D));
+			ga.UpdateIcon = (Texture2D)Resources.LoadAssetAtPath("Assets/External/Gizmos/Images/update_orange.png", typeof(Texture2D));
 		}
 
 		if(ga.Logo == null)
 		{
-			ga.Logo = (Texture2D)Resources.LoadAssetAtPath("Assets/Gizmos/gaLogo.png", typeof(Texture2D));
+			ga.Logo = (Texture2D)Resources.LoadAssetAtPath("Assets/External/Gizmos/gaLogo.png", typeof(Texture2D));
 			
 			//http://www.base64-image.de
 			/*String d = "";
@@ -166,8 +166,8 @@ public class GA_Inspector : Editor
 		if (ga.SignupButton == null)
 		{
 			GUIStyle signupButton = new GUIStyle(GUI.skin.button);
-			signupButton.normal.background = (Texture2D)Resources.LoadAssetAtPath("Assets/Gizmos/Images/default.png", typeof(Texture2D));
-			signupButton.active.background = (Texture2D)Resources.LoadAssetAtPath("Assets/Gizmos/Images/active.png", typeof(Texture2D));
+			signupButton.normal.background = (Texture2D)Resources.LoadAssetAtPath("Assets/External/Gizmos/Images/default.png", typeof(Texture2D));
+			signupButton.active.background = (Texture2D)Resources.LoadAssetAtPath("Assets/External/Gizmos/Images/active.png", typeof(Texture2D));
 			signupButton.normal.textColor = Color.white;
 			signupButton.active.textColor = Color.white;
 			signupButton.fontSize = 14;
@@ -1734,8 +1734,8 @@ public class GA_Inspector : Editor
 		string searchText = "//#define CB_ON";
 		string replaceText = "#define CB_ON";
 		
-		string filePath = Application.dataPath + "/GameAnalytics/Plugins/Framework/Scripts/GA_AdSupport.cs";
-		string filePathJS = Application.dataPath + "/Plugins/GameAnalytics/Framework/Scripts/GA_AdSupport.cs";
+		string filePath = Application.dataPath + "/External" + "/GameAnalytics/Plugins/Framework/Scripts/GA_AdSupport.cs";
+		string filePathJS = Application.dataPath + "/External" + "/Plugins/GameAnalytics/Framework/Scripts/GA_AdSupport.cs";
 		try {
 			enabled = GA_Menu.ReplaceInFile (filePath, searchText, replaceText);
 		} catch {

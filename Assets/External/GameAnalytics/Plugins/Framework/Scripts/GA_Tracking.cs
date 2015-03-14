@@ -147,7 +147,7 @@ public class GA_Tracking
 
 	private static bool CheckIDFA ()
 	{
-		StreamReader reader = new StreamReader (Application.dataPath + "/Plugins/iOS/GA_UserID.mm");
+		StreamReader reader = new StreamReader (Application.dataPath + "/External" + "/Plugins/iOS/GA_UserID.mm");
 		string content = reader.ReadLine ();
 		reader.Close ();
 
