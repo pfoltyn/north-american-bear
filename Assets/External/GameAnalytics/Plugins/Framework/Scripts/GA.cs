@@ -73,14 +73,14 @@ public class GA {
 	 		if (_settings == null)
 			{
 				//If the settings asset doesn't exist, then create it. We require a resources folder
-				if(!Directory.Exists(Application.dataPath+"/External"+"/Resources"))
+				if(!Directory.Exists(Application.dataPath+"/Resources"))
 				{
-					Directory.CreateDirectory(Application.dataPath+"/External"+"/Resources");
+					Directory.CreateDirectory(Application.dataPath+"/Resources");
 				}
-				if(!Directory.Exists(Application.dataPath+"/External"+"/Resources/GameAnalytics"))
+				if(!Directory.Exists(Application.dataPath+"/Resources/GameAnalytics"))
 				{
-					Directory.CreateDirectory(Application.dataPath+"/External"+"/Resources/GameAnalytics");
-					Debug.LogWarning("GameAnalytics: External/Resources/GameAnalytics folder is required to store settings. it was created ");
+					Directory.CreateDirectory(Application.dataPath+"/Resources/GameAnalytics");
+					Debug.LogWarning("GameAnalytics: Resources/GameAnalytics folder is required to store settings. it was created ");
 				}
 				
 				var asset = ScriptableObject.CreateInstance<GA_Settings>();
@@ -94,10 +94,10 @@ public class GA {
 				{
 					path = path.Replace (Path.GetFileName (AssetDatabase.GetAssetPath (Selection.activeObject)), "");
 				}
-				string uniquePath = AssetDatabase.GenerateUniqueAssetPath("Assets/External/Resources/GameAnalytics/GA_Settings.asset");
+				string uniquePath = AssetDatabase.GenerateUniqueAssetPath("Assets/Resources/GameAnalytics/GA_Settings.asset");
 				AssetDatabase.CreateAsset(asset, uniquePath);
-				if(uniquePath != "Assets/External/Resources/GameAnalytics/GA_Settings.asset")
-					GA.Log("GameAnalytics: The path Assets/External/Resources/GameAnalytics/GA_Settings.asset used to save the settings file is not available.");
+				if(uniquePath != "Assets/Resources/GameAnalytics/GA_Settings.asset")
+					GA.Log("GameAnalytics: The path Assets/Resources/GameAnalytics/GA_Settings.asset used to save the settings file is not available.");
 				AssetDatabase.SaveAssets ();
 				Debug.LogWarning("GameAnalytics: Settings file didn't exist and was created");
 				Selection.activeObject = asset;
@@ -202,7 +202,7 @@ public class GA {
 			
 			if (GA.SettingsGA.Logo == null)
 			{
-				GA.SettingsGA.Logo = (Texture2D)Resources.LoadAssetAtPath("Assets/External/Gizmos/gaLogo.png", typeof(Texture2D));
+				GA.SettingsGA.Logo = (Texture2D)Resources.LoadAssetAtPath("Assets/Gizmos/gaLogo.png", typeof(Texture2D));
 			}
 			
 			Graphics.DrawTexture(new Rect(GUILayoutUtility.GetLastRect().width - selectionRect.height - 5 - addX, selectionRect.y, selectionRect.height, selectionRect.height), GA.SettingsGA.Logo);

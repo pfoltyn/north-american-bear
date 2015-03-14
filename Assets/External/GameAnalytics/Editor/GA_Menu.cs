@@ -91,7 +91,7 @@ public class GA_Menu : MonoBehaviour
 		foreach(string _file in _files)
 		{
 			try {
-				enabled = ReplaceInFile (Application.dataPath + "/External" + _file, searchText, replaceText);
+				enabled = ReplaceInFile (Application.dataPath + _file, searchText, replaceText);
 			} catch {
 				Debug.Log("Failed to toggle "+_file);
 				fail = true;
@@ -157,8 +157,8 @@ public class GA_Menu : MonoBehaviour
 		string searchText = "#if false";
 		string replaceText = "#if true";
 		
-		string filePath = Application.dataPath + "/External" + "/GameAnalytics/Plugins/Framework/Scripts/GA_FacebookSDK.cs";
-		string filePathJS = Application.dataPath + "/External" + "/Plugins/GameAnalytics/Framework/Scripts/GA_FacebookSDK.cs";
+		string filePath = Application.dataPath + "/GameAnalytics/Plugins/Framework/Scripts/GA_FacebookSDK.cs";
+		string filePathJS = Application.dataPath + "/Plugins/GameAnalytics/Framework/Scripts/GA_FacebookSDK.cs";
 		try {
 			enabled = ReplaceInFile (filePath, searchText, replaceText);
 		} catch {
@@ -182,33 +182,33 @@ public class GA_Menu : MonoBehaviour
 	[MenuItem ("Window/GameAnalytics/Folder Structure/Switch to JS", false, 600)]
 	static void JsFolders ()
 	{
-		if (!Directory.Exists(Application.dataPath + "/External" + "/GameAnalytics/Plugins/"))
+		if (!Directory.Exists(Application.dataPath + "/GameAnalytics/Plugins/"))
 		{
 			Debug.LogWarning("Folder structure incompatible, did you already switch to JS folder structure, or have you manually changed the folder structure?");
 			return;
 		}
 		
-		if (!Directory.Exists(Application.dataPath + "/External" + "/Plugins/"))
-			AssetDatabase.CreateFolder("Assets/External", "Plugins");
-		if (!Directory.Exists(Application.dataPath + "/External" + "/Plugins/GameAnalytics"))
-			AssetDatabase.CreateFolder("Assets/External/Plugins", "GameAnalytics");
+		if (!Directory.Exists(Application.dataPath + "/Plugins/"))
+			AssetDatabase.CreateFolder("Assets", "Plugins");
+		if (!Directory.Exists(Application.dataPath + "/Plugins/GameAnalytics"))
+			AssetDatabase.CreateFolder("Assets/Plugins", "GameAnalytics");
 		
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Plugins/Android", "Assets/External/Plugins/GameAnalytics/Android");
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Plugins/Components", "Assets/External/Plugins/GameAnalytics/Components");
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Plugins/Examples", "Assets/External/Plugins/GameAnalytics/Examples");
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Plugins/Framework", "Assets/External/Plugins/GameAnalytics/Framework");
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Plugins/iOS", "Assets/External/Plugins/GameAnalytics/iOS");
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Plugins/Playmaker", "Assets/External/Plugins/GameAnalytics/Playmaker");
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Plugins/WebPlayer", "Assets/External/Plugins/GameAnalytics/WebPlayer");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Plugins/Android", "Assets/Plugins/GameAnalytics/Android");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Plugins/Components", "Assets/Plugins/GameAnalytics/Components");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Plugins/Examples", "Assets/Plugins/GameAnalytics/Examples");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Plugins/Framework", "Assets/Plugins/GameAnalytics/Framework");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Plugins/iOS", "Assets/Plugins/GameAnalytics/iOS");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Plugins/Playmaker", "Assets/Plugins/GameAnalytics/Playmaker");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Plugins/WebPlayer", "Assets/Plugins/GameAnalytics/WebPlayer");
 		
-		if (!Directory.Exists(Application.dataPath + "/External" + "/Editor/"))
-			AssetDatabase.CreateFolder("Assets/External", "Editor");
+		if (!Directory.Exists(Application.dataPath + "/Editor/"))
+			AssetDatabase.CreateFolder("Assets", "Editor");
 		
-		AssetDatabase.MoveAsset("Assets/External/GameAnalytics/Editor", "Assets/External/Editor/GameAnalytics");
+		AssetDatabase.MoveAsset("Assets/GameAnalytics/Editor", "Assets/Editor/GameAnalytics");
 		
-		AssetDatabase.DeleteAsset("Assets/External/GameAnalytics/Plugins");
-		AssetDatabase.DeleteAsset("Assets/External/GameAnalytics/Editor");
-		AssetDatabase.DeleteAsset("Assets/External/GameAnalytics");
+		AssetDatabase.DeleteAsset("Assets/GameAnalytics/Plugins");
+		AssetDatabase.DeleteAsset("Assets/GameAnalytics/Editor");
+		AssetDatabase.DeleteAsset("Assets/GameAnalytics");
 		
 		AssetDatabase.Refresh();
 	}
@@ -216,29 +216,29 @@ public class GA_Menu : MonoBehaviour
 	[MenuItem ("Window/GameAnalytics/Folder Structure/Revert to original", false, 601)]
 	static void RevertFolders ()
 	{
-		if (!Directory.Exists(Application.dataPath + "/External" + "/Plugins/GameAnalytics/"))
+		if (!Directory.Exists(Application.dataPath + "/Plugins/GameAnalytics/"))
 		{
 			Debug.LogWarning("Folder structure incompatible, are you already using original folder structure, or have you manually changed the folder structure?");
 			return;
 		}
 		
-		if (!Directory.Exists(Application.dataPath + "/External" + "/GameAnalytics/"))
-			AssetDatabase.CreateFolder("Assets/External", "GameAnalytics");
-		if (!Directory.Exists(Application.dataPath + "/External" + "/GameAnalytics/Plugins"))
-			AssetDatabase.CreateFolder("Assets/External/GameAnalytics", "Plugins");
+		if (!Directory.Exists(Application.dataPath + "/GameAnalytics/"))
+			AssetDatabase.CreateFolder("Assets", "GameAnalytics");
+		if (!Directory.Exists(Application.dataPath + "/GameAnalytics/Plugins"))
+			AssetDatabase.CreateFolder("Assets/GameAnalytics", "Plugins");
 		
-		AssetDatabase.MoveAsset("Assets/External/Plugins/GameAnalytics/Android", "Assets/External/GameAnalytics/Plugins/Android");
-		AssetDatabase.MoveAsset("Assets/External/Plugins/GameAnalytics/Components", "Assets/External/GameAnalytics/Plugins/Components");
-		AssetDatabase.MoveAsset("Assets/External/Plugins/GameAnalytics/Examples", "Assets/External/GameAnalytics/Plugins/Examples");
-		AssetDatabase.MoveAsset("Assets/External/Plugins/GameAnalytics/Framework", "Assets/External/GameAnalytics/Plugins/Framework");
-		AssetDatabase.MoveAsset("Assets/External/Plugins/GameAnalytics/iOS", "Assets/External/GameAnalytics/Plugins/iOS");
-		AssetDatabase.MoveAsset("Assets/External/Plugins/GameAnalytics/Playmaker", "Assets/External/GameAnalytics/Plugins/Playmaker");
-		AssetDatabase.MoveAsset("Assets/External/Plugins/GameAnalytics/WebPlayer", "Assets/External/GameAnalytics/Plugins/WebPlayer");
+		AssetDatabase.MoveAsset("Assets/Plugins/GameAnalytics/Android", "Assets/GameAnalytics/Plugins/Android");
+		AssetDatabase.MoveAsset("Assets/Plugins/GameAnalytics/Components", "Assets/GameAnalytics/Plugins/Components");
+		AssetDatabase.MoveAsset("Assets/Plugins/GameAnalytics/Examples", "Assets/GameAnalytics/Plugins/Examples");
+		AssetDatabase.MoveAsset("Assets/Plugins/GameAnalytics/Framework", "Assets/GameAnalytics/Plugins/Framework");
+		AssetDatabase.MoveAsset("Assets/Plugins/GameAnalytics/iOS", "Assets/GameAnalytics/Plugins/iOS");
+		AssetDatabase.MoveAsset("Assets/Plugins/GameAnalytics/Playmaker", "Assets/GameAnalytics/Plugins/Playmaker");
+		AssetDatabase.MoveAsset("Assets/Plugins/GameAnalytics/WebPlayer", "Assets/GameAnalytics/Plugins/WebPlayer");
 		
-		AssetDatabase.MoveAsset("Assets/External/Editor/GameAnalytics", "Assets/External/GameAnalytics/Editor");
+		AssetDatabase.MoveAsset("Assets/Editor/GameAnalytics", "Assets/GameAnalytics/Editor");
 		
-		AssetDatabase.DeleteAsset("Assets/External/Plugins/GameAnalytics");
-		AssetDatabase.DeleteAsset("Assets/External/Editor/GameAnalytics");
+		AssetDatabase.DeleteAsset("Assets/Plugins/GameAnalytics");
+		AssetDatabase.DeleteAsset("Assets/Editor/GameAnalytics");
 		
 		Debug.Log("Project must be reloaded when reverting folder structure.");
 		EditorApplication.OpenProject(Application.dataPath.Remove(Application.dataPath.Length - "Assets".Length, "Assets".Length));
