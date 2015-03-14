@@ -32,6 +32,8 @@ public class MainCodeLoop : MonoBehaviour
 	private string word;
 	private int letterIndex;
 	private bool once;
+	private bool sounds;
+	private bool movingBackground;
 
 	private int wordIndex;
 	private int seed;
@@ -127,6 +129,9 @@ public class MainCodeLoop : MonoBehaviour
 
 		Texture texture = textures[wordIndex % textures.Length];
 		backgroundRenderer.material.mainTexture = texture;
+
+		sounds = PlayerPrefs.GetInt("sounds", 1) == 1;
+		movingBackground = PlayerPrefs.GetInt("moving_background", 1) == 1;
     }
 
 	private void ResetPlayersGuess()
@@ -188,7 +193,10 @@ public class MainCodeLoop : MonoBehaviour
 			if (Physics.Raycast(ray, out hit))
 			{
 				once = false;
-				clickAudio.Play();
+				if (sounds)
+				{
+					clickAudio.Play();
+				}
 				Animator animator = hit.collider.GetComponent<Animator>();
 				if (menuItems.Contains(hit.collider.gameObject))
 				{
@@ -210,10 +218,13 @@ public class MainCodeLoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
-		float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
-		backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
-		backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
+		if (movingBackground)
+		{
+			float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
+			float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
+			backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
+			backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
+		}
 
 		if (Input.touchCount == 0)
 		{
@@ -224,12 +235,15 @@ public class MainCodeLoop : MonoBehaviour
 		{
 			if (System.Array.IndexOf(words, word) >= 0)
 			{
-				successAudio.Play();
+				if (sounds)
+				{
+					successAudio.Play();
+				}
 				wordIndex = (wordIndex + 1) % words.Length;
 				score++;
 				InitLetters();
 			}
-			else
+			else if (sounds)
 			{
 				failAudio.Play();
 			}
