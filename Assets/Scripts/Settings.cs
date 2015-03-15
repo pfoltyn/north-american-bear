@@ -117,7 +117,10 @@ public class Settings : MonoBehaviour
 			backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
 		}
 
-		gameMusic.GetComponent<AudioSource>().mute = !music;
+		if (gameMusic)
+		{
+			gameMusic.GetComponent<AudioSource>().mute = !music;
+		}
 
 		if (Input.touchCount == 0)
 		{

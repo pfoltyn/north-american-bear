@@ -65,11 +65,12 @@ public class MainCodeLoop : MonoBehaviour
 			}
 		}
 		
-		// HACK! Need to make it scale to more than two digits.
-		if (score < 100)
+		// HACK! Need to make it scale to more digits.
+		if (score < 1000)
 		{
-			scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score / 10)];
-			scoreSlots[1].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score % 10)];
+			scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score / 100)];
+			scoreSlots[1].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + (score % 100) / 10)];
+			scoreSlots[2].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + (score % 100) % 10)];
 		}
 	}
 
