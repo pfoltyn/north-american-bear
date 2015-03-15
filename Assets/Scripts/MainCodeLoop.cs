@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class MainCodeLoop : MonoBehaviour
 {
     public TextAsset textAsset;
+	public TextAsset textAssetFull;
 	public GameObject[] bigSlots;
 	public GameObject[] smallSlots;
 	public GameObject[] scoreSlots;
@@ -27,6 +28,7 @@ public class MainCodeLoop : MonoBehaviour
     private Dictionary<char, Mesh> letterToMesh;
 	private Dictionary<GameObject, char> slotToLetter;
     private string[] words;
+	private string[] allWords;
 	private float scrollSpeedY;
 	private float scrollSpeedX;
 	private string word;
@@ -99,6 +101,8 @@ public class MainCodeLoop : MonoBehaviour
 		seed = PlayerPrefs.GetInt(name + "seed", 42);
 		score = PlayerPrefs.GetInt(name + "score", 0);
 
+		allWords = textAssetFull.text.Split('\n');
+		allWords = allWords.Select(x => x.Trim()).ToArray();
         words = textAsset.text.Split('\n');
 		words = words.Select(x => x.Trim()).ToArray();
 		Reshuffle(words);
@@ -234,7 +238,7 @@ public class MainCodeLoop : MonoBehaviour
 
 		if (letterIndex >= smallSlots.Length)
 		{
-			if (System.Array.IndexOf(words, word) >= 0)
+			if (System.Array.IndexOf(allWords, word) >= 0)
 			{
 				if (sounds)
 				{
