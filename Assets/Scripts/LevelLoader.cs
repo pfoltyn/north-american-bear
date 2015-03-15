@@ -8,17 +8,28 @@ public class LevelLoader : MonoBehaviour
 	public static Mesh titleMesh;
 	public static string levelToLoad;
 
+	public GameObject[] scoreSlots;
 	public GameObject[] choiceSlots;
 	public Renderer backgroundRenderer;
 	public AudioSource clickAudio;
 	public MeshFilter titleMeshFilter;
 
+	[System.Serializable]
+	public class LetterToMeshEntry
+	{
+		public string letter;
+		public Mesh mesh;
+	}
+	public LetterToMeshEntry[] letterToMeshList;
+	
+	private Dictionary<char, Mesh> letterToMesh;
 	private Fader fader;
 	private float scrollSpeedY;
 	private float scrollSpeedX;
 	private bool once;
 	private bool sounds;
 	private bool movingBackground;
+	private int highscore;
 
     // Use this for initialization
     void Start()
@@ -26,11 +37,18 @@ public class LevelLoader : MonoBehaviour
 		once = true;
 		scrollSpeedY = 0.02f;
 		scrollSpeedX = 0.02f;
+		highscore = PlayerPrefs.GetInt(levelToLoad + "highScore", 0);
 		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 		foreach (var slot in choiceSlots)
 		{
 			Animator animator = slot.GetComponent<Animator>();
 			animator.SetFloat("Speed", Random.Range(0f, 1f));
+		}
+
+		letterToMesh = new Dictionary<char, Mesh>();
+		foreach (var item in letterToMeshList)
+		{
+			letterToMesh[item.letter[0]] = item.mesh;
 		}
 
 		titleMeshFilter.mesh = titleMesh;
@@ -81,6 +99,13 @@ public class LevelLoader : MonoBehaviour
 			float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
 			backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
 			backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
+		}
+
+		if (highscore > 0)
+		{
+			scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + highscore / 100)];
+			scoreSlots[1].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + (highscore % 100) / 10)];
+			scoreSlots[2].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + (highscore % 100) % 10)];
 		}
 
 		if (Input.touchCount == 0)
