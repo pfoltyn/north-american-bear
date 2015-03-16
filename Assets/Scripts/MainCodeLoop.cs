@@ -10,8 +10,6 @@ public class MainCodeLoop : MonoBehaviour
 	public GameObject[] bigSlots;
 	public GameObject[] smallSlots;
 	public GameObject[] scoreSlots;
-	public Texture[] textures;
-	public Renderer backgroundRenderer;
 	public GameObject[] menuItems;
 	public AudioSource failAudio;
 	public AudioSource successAudio;
@@ -29,8 +27,6 @@ public class MainCodeLoop : MonoBehaviour
 	private Dictionary<GameObject, char> slotToLetter;
     private string[] words;
 	private string[] allWords;
-	private float scrollSpeedY;
-	private float scrollSpeedX;
 	private string word;
 	private int letterIndex;
 	private bool once;
@@ -91,8 +87,6 @@ public class MainCodeLoop : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-		scrollSpeedY = 0.02f;
-		scrollSpeedX = 0.02f;
 		word = "";
 		letterIndex = 0;
 
@@ -132,11 +126,7 @@ public class MainCodeLoop : MonoBehaviour
 
 		InitLetters();
 
-		Texture texture = textures[wordIndex % textures.Length];
-		backgroundRenderer.material.mainTexture = texture;
-
 		sounds = PlayerPrefs.GetInt("sounds", 1) == 1;
-		movingBackground = PlayerPrefs.GetInt("moving_background", 1) == 1;
     }
 
 	private void ResetPlayersGuess()
@@ -223,14 +213,6 @@ public class MainCodeLoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (movingBackground)
-		{
-			float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
-			float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
-			backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
-			backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
-		}
-
 		if (Input.touchCount == 0)
 		{
 			once = true;

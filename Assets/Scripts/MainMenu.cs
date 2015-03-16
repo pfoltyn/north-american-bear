@@ -6,22 +6,16 @@ using System.Collections.Generic;
 public class MainMenu : MonoBehaviour
 {
 	public GameObject[] choiceSlots;
-	public Renderer backgroundRenderer;
 	public AudioSource clickAudio;
 
 	private Fader fader;
-	private float scrollSpeedY;
-	private float scrollSpeedX;
 	private bool once;
 	private bool sounds;
-	private bool movingBackground;
 
     // Use this for initialization
     void Start()
     {
 		once = true;
-		scrollSpeedY = 0.02f;
-		scrollSpeedX = 0.02f;
 		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 		foreach (var slot in choiceSlots)
 		{
@@ -29,7 +23,6 @@ public class MainMenu : MonoBehaviour
 			animator.SetFloat("Speed", Random.Range(0f, 1f));
 		}
 		sounds = PlayerPrefs.GetInt("sounds", 1) == 1;
-		movingBackground = PlayerPrefs.GetInt("moving_background", 1) == 1;
     }
 
 	void OnGUI()
@@ -77,15 +70,4 @@ public class MainMenu : MonoBehaviour
 			}
 		}
 	}
-	
-    void Update()
-    {
-		if (movingBackground)
-		{
-			float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
-			float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
-			backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
-			backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
-		}
-    }
 }

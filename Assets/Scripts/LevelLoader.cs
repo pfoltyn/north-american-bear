@@ -10,7 +10,6 @@ public class LevelLoader : MonoBehaviour
 
 	public GameObject[] scoreSlots;
 	public GameObject[] choiceSlots;
-	public Renderer backgroundRenderer;
 	public AudioSource clickAudio;
 	public MeshFilter titleMeshFilter;
 
@@ -24,19 +23,14 @@ public class LevelLoader : MonoBehaviour
 	
 	private Dictionary<char, Mesh> letterToMesh;
 	private Fader fader;
-	private float scrollSpeedY;
-	private float scrollSpeedX;
 	private bool once;
 	private bool sounds;
-	private bool movingBackground;
 	private int highscore;
 
     // Use this for initialization
     void Start()
     {
 		once = true;
-		scrollSpeedY = 0.02f;
-		scrollSpeedX = 0.02f;
 		highscore = PlayerPrefs.GetInt(levelToLoad + "highScore", 0);
 		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 		foreach (var slot in choiceSlots)
@@ -54,7 +48,6 @@ public class LevelLoader : MonoBehaviour
 		titleMeshFilter.mesh = titleMesh;
 
 		sounds = PlayerPrefs.GetInt("sounds", 1) == 1;
-		movingBackground = PlayerPrefs.GetInt("moving_background", 1) == 1;
     }
 
 	void OnGUI()
@@ -93,14 +86,6 @@ public class LevelLoader : MonoBehaviour
 	
     void Update()
     {
-		if (movingBackground)
-		{
-			float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
-			float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
-			backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
-			backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
-		}
-
 		if (highscore > 0)
 		{
 			scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + highscore / 100)];
@@ -108,9 +93,6 @@ public class LevelLoader : MonoBehaviour
 			scoreSlots[2].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + (highscore % 100) % 10)];
 		}
 
-		if (Input.touchCount == 0)
-		{
-			once = true;
-		}
+		once = Input.touchCount == 0;
     }
 }

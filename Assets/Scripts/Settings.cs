@@ -6,14 +6,11 @@ using System.Collections.Generic;
 public class Settings : MonoBehaviour
 {
 	public GameObject[] choiceSlots;
-	public Renderer backgroundRenderer;
 	public AudioSource clickAudio;
 	public Mesh Empty;
 	public Mesh Ticked;
 
 	private Fader fader;
-	private float scrollSpeedY;
-	private float scrollSpeedX;
 	private bool once;
 	private bool sounds;
 	private bool music;
@@ -24,8 +21,6 @@ public class Settings : MonoBehaviour
     void Start()
     {
 		once = true;
-		scrollSpeedY = 0.02f;
-		scrollSpeedX = 0.02f;
 		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 		foreach (var slot in choiceSlots)
 		{
@@ -109,22 +104,11 @@ public class Settings : MonoBehaviour
 	
     void Update()
     {
-		if (movingBackground)
-		{
-			float offsetY = Mathf.Sin(2 * Mathf.PI * Time.time * scrollSpeedY);
-			float offsetX = Mathf.Cos(2 * Mathf.PI * Time.time * scrollSpeedX);
-			backgroundRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
-			backgroundRenderer.material.mainTextureScale = new Vector2(3 + offsetY, 3 + offsetX);
-		}
-
 		if (gameMusic)
 		{
 			gameMusic.GetComponent<AudioSource>().mute = !music;
 		}
 
-		if (Input.touchCount == 0)
-		{
-			once = true;
-		}
+		once = Input.touchCount == 0;
     }
 }
