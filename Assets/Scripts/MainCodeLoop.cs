@@ -148,6 +148,8 @@ public class MainCodeLoop : MonoBehaviour
 
 	private void HandleMenuClick(GameObject hitGo)
 	{
+		MeshFilter meshFilter;
+		char letter;
 		int idx = System.Array.IndexOf(menuItems, hitGo);
 		switch (idx) {
 		case 0:
@@ -155,16 +157,33 @@ public class MainCodeLoop : MonoBehaviour
 			go.GetComponent<Fader>().Stop(() => Application.LoadLevel("menu"));
 			break;
 		case 1:
-			ResetPlayersGuess();
+			if (letterIndex > 0)
+			{
+				letterIndex--;
+				meshFilter = smallSlots[letterIndex].GetComponent<MeshFilter>();
+				meshFilter.mesh = letterToMesh['_'];
+				letter = word[word.Length - 1];
+				word = word.Remove(word.Length - 1);
+				foreach (var slot in bigSlots)
+				{
+					if (letter == slotToLetter[slot])
+					{
+						Animator animator = slot.GetComponent<Animator>();
+						animator.SetBool("Pressed", false);
+						break;
+					}
+				}
+			}
 			break;
 		case 2:
 			ResetPlayersGuess();
-			char letter = words[wordIndex][0];
-			MeshFilter meshFilter = smallSlots[0].GetComponent<MeshFilter>();
+			letter = words[wordIndex][0];
+			meshFilter = smallSlots[0].GetComponent<MeshFilter>();
 			meshFilter.mesh = letterToMesh[letter];
 			letterIndex++;
 			word += letter;
-			foreach (var slot in bigSlots) {
+			foreach (var slot in bigSlots)
+			{
 				if (letter == slotToLetter[slot])
 				{
 					Animator animator = slot.GetComponent<Animator>();
