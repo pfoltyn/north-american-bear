@@ -7,6 +7,7 @@ public class MainCodeLoop : MonoBehaviour
 {
     public TextAsset textAsset;
 	public TextAsset textAssetFull;
+	public GameObject[] timeSlots;
 	public GameObject[] bigSlots;
 	public GameObject[] smallSlots;
 	public GameObject[] scoreSlots;
@@ -14,6 +15,7 @@ public class MainCodeLoop : MonoBehaviour
 	public AudioSource failAudio;
 	public AudioSource successAudio;
 	public AudioSource clickAudio;
+	public int scoreLimit;
 
     [System.Serializable]
     public class LetterToMeshEntry
@@ -31,11 +33,12 @@ public class MainCodeLoop : MonoBehaviour
 	private int letterIndex;
 	private bool once;
 	private bool sounds;
-	private bool movingBackground;
+	private float timeOffset;
 
 	private int wordIndex;
 	private int seed;
 	private int score;
+	private float theTime;
 
 	private void InitLetters()
 	{
@@ -62,14 +65,11 @@ public class MainCodeLoop : MonoBehaviour
 				bigSlotIndex = bigSlotIndices.ToArray()[Random.Range(0, bigSlotIndices.Count)];
 			}
 		}
-		
-		// HACK! Need to make it scale to more digits.
-		if (score < 1000)
-		{
-			scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score / 100)];
-			scoreSlots[1].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + (score % 100) / 10)];
-			scoreSlots[2].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + (score % 100) % 10)];
-		}
+
+		scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score / 10)];
+		scoreSlots[1].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score % 10)];
+		scoreSlots[2].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + scoreLimit / 10)];
+		scoreSlots[3].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + scoreLimit % 10)];
 	}
 
 	private void Reshuffle(string[] texts)
@@ -94,6 +94,7 @@ public class MainCodeLoop : MonoBehaviour
 		wordIndex = PlayerPrefs.GetInt(name + "wordIndex", 0);
 		seed = PlayerPrefs.GetInt(name + "seed", 42);
 		score = PlayerPrefs.GetInt(name + "score", 0);
+		timeOffset = PlayerPrefs.GetFloat(name + "time", 0f);
 
 		allWords = textAssetFull.text.Split('\n');
 		allWords = allWords.Select(x => x.Trim()).ToArray();
@@ -232,6 +233,20 @@ public class MainCodeLoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		theTime = timeOffset + Time.timeSinceLevelLoad;
+		timeSlots[0].GetComponent<MeshFilter>().mesh =
+			letterToMesh[(char)('0' + (int)(theTime / 60) / 10)];
+		timeSlots[1].GetComponent<MeshFilter>().mesh =
+			letterToMesh[(char)('0' + (int)(theTime / 60) % 10)];
+		timeSlots[2].GetComponent<MeshFilter>().mesh =
+			letterToMesh[(char)('0' + (int)(theTime % 60) / 10)];
+		timeSlots[3].GetComponent<MeshFilter>().mesh =
+			letterToMesh[(char)('0' + (int)(theTime % 60) % 10)];
+		timeSlots[4].GetComponent<MeshFilter>().mesh =
+			letterToMesh[(char)('0' + (int)((theTime - (int)theTime) * 100) / 10)];
+		timeSlots[5].GetComponent<MeshFilter>().mesh =
+			letterToMesh[(char)('0' + (int)((theTime - (int)theTime) * 100) % 10)];
+
 		if (Input.touchCount == 0)
 		{
 			once = true;
@@ -264,6 +279,7 @@ public class MainCodeLoop : MonoBehaviour
 		PlayerPrefs.SetInt(name + "wordIndex", wordIndex);
 		PlayerPrefs.SetInt(name + "seed", seed);
 		PlayerPrefs.SetInt(name + "score", score);
+		PlayerPrefs.SetFloat(name + "time", (score > 0) ? theTime : 0f);
 		if (PlayerPrefs.GetInt(name + "highScore", 0) < score)
 		{
 			PlayerPrefs.SetInt(name + "highScore", score);
