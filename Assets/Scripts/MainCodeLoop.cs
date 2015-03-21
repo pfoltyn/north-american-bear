@@ -74,7 +74,7 @@ public class MainCodeLoop : MonoBehaviour
 
     void Start()
     {
-		lvlName = Application.loadedLevelName;
+		lvlName = LevelLoader.levelToLoad;
 		word = "";
 		letterIndex = 0;
 
@@ -196,6 +196,7 @@ public class MainCodeLoop : MonoBehaviour
     void Update()
     {
 		theTime = timeOffset + Time.timeSinceLevelLoad;
+		PlayerPrefs.SetFloat(lvlName + "time", theTime);
 		Utils.TimeToMesh(theTime, timeSlots);
 
 		if (letterIndex >= smallSlots.Length)
@@ -206,6 +207,11 @@ public class MainCodeLoop : MonoBehaviour
 				wordIndex = (wordIndex + 1) % words.Length;
 				score++;
 				InitLetters();
+
+				PlayerPrefs.SetInt(lvlName + "wordIndex", wordIndex);
+				PlayerPrefs.SetInt(lvlName + "seed", seed);
+				PlayerPrefs.SetInt(lvlName + "score", score);
+
 			}
 			else
 			{
@@ -221,7 +227,11 @@ public class MainCodeLoop : MonoBehaviour
 				{
 					PlayerPrefs.SetFloat(lvlName + "highScore", theTime);
 				}
-				OnDestroy();
+				PlayerPrefs.SetInt(lvlName + "wordIndex", 0);
+				PlayerPrefs.SetInt(lvlName + "seed", Random.Range(0, 255));
+				PlayerPrefs.SetInt(lvlName + "score", 0);
+				PlayerPrefs.SetFloat(lvlName + "time", 0f);
+
 				fader.Stop(() => Application.LoadLevel("gameover"));
 				enabled = false;
 			}
@@ -230,10 +240,10 @@ public class MainCodeLoop : MonoBehaviour
 
 	void OnDestroy()
 	{
-		PlayerPrefs.SetInt(lvlName + "wordIndex", wordIndex);
-		PlayerPrefs.SetInt(lvlName + "seed", seed);
-		PlayerPrefs.SetInt(lvlName + "score", score);
-		PlayerPrefs.SetFloat(lvlName + "time", theTime);
+		if (score == 0)
+		{
+			PlayerPrefs.SetFloat(lvlName + "time", 0f);
+		}
 		PlayerPrefs.Save();
 	}
 }

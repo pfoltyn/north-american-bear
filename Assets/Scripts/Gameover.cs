@@ -33,10 +33,6 @@ public class Gameover : MonoBehaviour
 			string levelToLoad = "menu";
 			if (choiceSlots[0] != gameObject)
 			{
-				PlayerPrefs.SetInt(LevelLoader.levelToLoad + "wordIndex", 0);
-				PlayerPrefs.SetInt(LevelLoader.levelToLoad + "seed", Random.Range(0, 255));
-				PlayerPrefs.SetInt(LevelLoader.levelToLoad + "score", 0);
-				PlayerPrefs.SetFloat(LevelLoader.levelToLoad + "time", 0f);
 				levelToLoad = LevelLoader.levelToLoad;
 			}
 			Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
