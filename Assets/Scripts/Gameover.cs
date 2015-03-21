@@ -21,8 +21,12 @@ public class Gameover : MonoBehaviour
 		Utils.RandomiseAnimationSpeed(choiceSlots);
 		Utils.TimeToMesh(highscore, recordSlots);
 		Utils.TimeToMesh(endScore, scoreSlots);
+		if (endScore <= highscore)
+		{
+			GameObject.Find("Fireworks").GetComponent<Fireworks>().FireAtWill();
+		}
     }
-
+	
 	void OnGUI()
 	{
 		Utils.DetectTouch((GameObject gameObject) => {
