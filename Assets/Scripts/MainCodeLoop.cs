@@ -12,28 +12,16 @@ public class MainCodeLoop : MonoBehaviour
 	public GameObject[] smallSlots;
 	public GameObject[] scoreSlots;
 	public GameObject[] menuItems;
-	public AudioSource failAudio;
-	public AudioSource successAudio;
-	public AudioSource clickAudio;
 	public int scoreLimit;
 
-    [System.Serializable]
-    public class LetterToMeshEntry
-    {
-        public string letter;
-        public Mesh mesh;
-    }
-    public LetterToMeshEntry[] letterToMeshList;
-
-    private Dictionary<char, Mesh> letterToMesh;
 	private Dictionary<GameObject, char> slotToLetter;
     private string[] words;
 	private string[] allWords;
 	private string word;
 	private int letterIndex;
-	private bool once;
-	private bool sounds;
 	private float timeOffset;
+	private Fader fader;
+	private string lvlName;
 
 	private int wordIndex;
 	private int seed;
@@ -47,10 +35,10 @@ public class MainCodeLoop : MonoBehaviour
 		int bigSlotIndex = bigSlotIndices.ToArray()[Random.Range(0, bigSlotIndices.Count)];
 		foreach (var c in words[wordIndex])
 		{
-			if (letterToMesh.ContainsKey(c))
+			if (Utils.letterToMesh.ContainsKey(c))
 			{
 				MeshFilter meshFilter = bigSlots[bigSlotIndex].GetComponent<MeshFilter>();
-				meshFilter.mesh = letterToMesh[c];
+				meshFilter.mesh = Utils.letterToMesh[c];
 				slotToLetter[bigSlots[bigSlotIndex]] = c;
 			}
 			else
@@ -66,10 +54,10 @@ public class MainCodeLoop : MonoBehaviour
 			}
 		}
 
-		scoreSlots[0].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score / 10)];
-		scoreSlots[1].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + score % 10)];
-		scoreSlots[2].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + scoreLimit / 10)];
-		scoreSlots[3].GetComponent<MeshFilter>().mesh = letterToMesh[(char)('0' + scoreLimit % 10)];
+		scoreSlots[0].GetComponent<MeshFilter>().mesh = Utils.letterToMesh[(char)('0' + score / 10)];
+		scoreSlots[1].GetComponent<MeshFilter>().mesh = Utils.letterToMesh[(char)('0' + score % 10)];
+		scoreSlots[2].GetComponent<MeshFilter>().mesh = Utils.letterToMesh[(char)('0' + scoreLimit / 10)];
+		scoreSlots[3].GetComponent<MeshFilter>().mesh = Utils.letterToMesh[(char)('0' + scoreLimit % 10)];
 	}
 
 	private void Reshuffle(string[] texts)
@@ -84,17 +72,17 @@ public class MainCodeLoop : MonoBehaviour
 		}
 	}
 
-    // Use this for initialization
     void Start()
     {
+		lvlName = Application.loadedLevelName;
 		word = "";
 		letterIndex = 0;
 
-		string name = Application.loadedLevelName;
-		wordIndex = PlayerPrefs.GetInt(name + "wordIndex", 0);
-		seed = PlayerPrefs.GetInt(name + "seed", 42);
-		score = PlayerPrefs.GetInt(name + "score", 0);
-		timeOffset = PlayerPrefs.GetFloat(name + "time", 0f);
+		wordIndex = PlayerPrefs.GetInt(lvlName + "wordIndex", 0);
+		seed = PlayerPrefs.GetInt(lvlName + "seed", 42);
+		score = PlayerPrefs.GetInt(lvlName + "score", 0);
+		timeOffset = PlayerPrefs.GetFloat(lvlName + "time", 0f);
+		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 
 		allWords = textAssetFull.text.Split('\n');
 		allWords = allWords.Select(x => x.Trim()).ToArray();
@@ -103,31 +91,18 @@ public class MainCodeLoop : MonoBehaviour
 		Reshuffle(words);
 
 		slotToLetter = new Dictionary<GameObject, char>();
-        letterToMesh = new Dictionary<char, Mesh>();
-		foreach (var item in letterToMeshList)
-		{
-			letterToMesh[item.letter[0]] = item.mesh;
-		}
 
 		foreach (var slot in bigSlots)
 		{
-			Animator animator = slot.GetComponent<Animator>();
-			animator.SetFloat("Speed", Random.Range(0f, 1f));
-
 			MeshFilter meshFilter = slot.GetComponent<MeshFilter>();
 			char letter = (char)Random.Range('a', 'z');
-			meshFilter.mesh = letterToMesh[letter];
+			meshFilter.mesh = Utils.letterToMesh[letter];
 			slotToLetter[slot] = letter;
 		}
-
-		foreach (var item in menuItems) {
-			Animator animator = item.GetComponent<Animator>();
-			animator.SetFloat("Speed", Random.Range(0f, 1f));
-		}
-
+		
+		Utils.RandomiseAnimationSpeed(bigSlots);
+		Utils.RandomiseAnimationSpeed(menuItems);
 		InitLetters();
-
-		sounds = PlayerPrefs.GetInt("sounds", 1) == 1;
     }
 
 	private void ResetPlayersGuess()
@@ -140,7 +115,7 @@ public class MainCodeLoop : MonoBehaviour
 		
 		foreach (var slot in smallSlots)
 		{
-			slot.GetComponent<MeshFilter>().mesh = letterToMesh['_'];
+			slot.GetComponent<MeshFilter>().mesh = Utils.letterToMesh['_'];
 		}
 		
 		letterIndex = 0;
@@ -154,15 +129,15 @@ public class MainCodeLoop : MonoBehaviour
 		int idx = System.Array.IndexOf(menuItems, hitGo);
 		switch (idx) {
 		case 0:
-			GameObject go = GameObject.FindGameObjectWithTag("Finish");
-			go.GetComponent<Fader>().Stop(() => Application.LoadLevel("menu"));
+			fader.Stop(() => Application.LoadLevel("menu"));
+			enabled = false;
 			break;
 		case 1:
 			if (letterIndex > 0)
 			{
 				letterIndex--;
 				meshFilter = smallSlots[letterIndex].GetComponent<MeshFilter>();
-				meshFilter.mesh = letterToMesh['_'];
+				meshFilter.mesh = Utils.letterToMesh['_'];
 				letter = word[word.Length - 1];
 				word = word.Remove(word.Length - 1);
 				foreach (var slot in bigSlots)
@@ -180,7 +155,7 @@ public class MainCodeLoop : MonoBehaviour
 			ResetPlayersGuess();
 			letter = words[wordIndex][0];
 			meshFilter = smallSlots[0].GetComponent<MeshFilter>();
-			meshFilter.mesh = letterToMesh[letter];
+			meshFilter.mesh = Utils.letterToMesh[letter];
 			letterIndex++;
 			word += letter;
 			foreach (var slot in bigSlots)
@@ -200,90 +175,65 @@ public class MainCodeLoop : MonoBehaviour
 
 	void OnGUI()
 	{
-		if (once && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-		{
-			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-			RaycastHit hit;
-			
-			if (Physics.Raycast(ray, out hit))
+		Utils.DetectTouch((GameObject gameObject) => {
+			Animator animator = gameObject.GetComponent<Animator>();
+		    if (menuItems.Contains(gameObject))
 			{
-				once = false;
-				if (sounds)
-				{
-					clickAudio.Play();
-				}
-				Animator animator = hit.collider.GetComponent<Animator>();
-				if (menuItems.Contains(hit.collider.gameObject))
-				{
-					HandleMenuClick(hit.collider.gameObject);
-				}
-				else if (animator.GetBool("Pressed") == false)
-				{
-					animator.SetBool("Pressed", true);
-					char letter = slotToLetter[hit.collider.gameObject];
-					MeshFilter meshFilter = smallSlots[letterIndex].GetComponent<MeshFilter>();
-					meshFilter.mesh = letterToMesh[letter];
-					letterIndex++;
-					word += letter;
-				}
+				HandleMenuClick(gameObject);
 			}
-		}
+			else if (animator.GetBool("Pressed") == false)
+			{
+				animator.SetBool("Pressed", true);
+				char letter = slotToLetter[gameObject];
+				MeshFilter meshFilter = smallSlots[letterIndex].GetComponent<MeshFilter>();
+				meshFilter.mesh = Utils.letterToMesh[letter];
+				letterIndex++;
+				word += letter;
+			}
+		});
 	}
 
-    // Update is called once per frame
     void Update()
     {
 		theTime = timeOffset + Time.timeSinceLevelLoad;
-		timeSlots[0].GetComponent<MeshFilter>().mesh =
-			letterToMesh[(char)('0' + (int)(theTime / 60) / 10)];
-		timeSlots[1].GetComponent<MeshFilter>().mesh =
-			letterToMesh[(char)('0' + (int)(theTime / 60) % 10)];
-		timeSlots[2].GetComponent<MeshFilter>().mesh =
-			letterToMesh[(char)('0' + (int)(theTime % 60) / 10)];
-		timeSlots[3].GetComponent<MeshFilter>().mesh =
-			letterToMesh[(char)('0' + (int)(theTime % 60) % 10)];
-		timeSlots[4].GetComponent<MeshFilter>().mesh =
-			letterToMesh[(char)('0' + (int)((theTime - (int)theTime) * 100) / 10)];
-		timeSlots[5].GetComponent<MeshFilter>().mesh =
-			letterToMesh[(char)('0' + (int)((theTime - (int)theTime) * 100) % 10)];
-
-		if (Input.touchCount == 0)
-		{
-			once = true;
-		}
+		Utils.TimeToMesh(theTime, timeSlots);
 
 		if (letterIndex >= smallSlots.Length)
 		{
 			if (System.Array.IndexOf(allWords, word) >= 0)
 			{
-				if (sounds)
-				{
-					successAudio.Play();
-				}
+				Utils.PlaySuccess();
 				wordIndex = (wordIndex + 1) % words.Length;
 				score++;
 				InitLetters();
 			}
-			else if (sounds)
+			else
 			{
-				failAudio.Play();
+				Utils.PlayFail();
 			}
 
 			ResetPlayersGuess();
+
+			if (wordIndex >= scoreLimit)
+			{
+				Gameover.endScore = theTime;
+				if (PlayerPrefs.GetFloat(lvlName + "highScore", 3599.999f) > theTime)
+				{
+					PlayerPrefs.SetFloat(lvlName + "highScore", theTime);
+				}
+				OnDestroy();
+				fader.Stop(() => Application.LoadLevel("gameover"));
+				enabled = false;
+			}
 		}
     }
 
 	void OnDestroy()
 	{
-		string name = Application.loadedLevelName;
-		PlayerPrefs.SetInt(name + "wordIndex", wordIndex);
-		PlayerPrefs.SetInt(name + "seed", seed);
-		PlayerPrefs.SetInt(name + "score", score);
-		PlayerPrefs.SetFloat(name + "time", (score > 0) ? theTime : 0f);
-		if (PlayerPrefs.GetInt(name + "highScore", 0) < score)
-		{
-			PlayerPrefs.SetInt(name + "highScore", score);
-		}
+		PlayerPrefs.SetInt(lvlName + "wordIndex", wordIndex);
+		PlayerPrefs.SetInt(lvlName + "seed", seed);
+		PlayerPrefs.SetInt(lvlName + "score", score);
+		PlayerPrefs.SetFloat(lvlName + "time", theTime);
 		PlayerPrefs.Save();
 	}
 }

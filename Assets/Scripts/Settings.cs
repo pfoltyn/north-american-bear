@@ -6,42 +6,26 @@ using System.Collections.Generic;
 public class Settings : MonoBehaviour
 {
 	public GameObject[] choiceSlots;
-	public AudioSource clickAudio;
 	public Mesh Empty;
 	public Mesh Ticked;
 
-	private Fader fader;
-	private bool once;
-	private bool sounds;
-	private bool music;
-	private bool movingBackground;
 	private GameObject gameMusic;
-
-    // Use this for initialization
+	
     void Start()
     {
-		once = true;
-		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
-		foreach (var slot in choiceSlots)
-		{
-			Animator animator = slot.GetComponent<Animator>();
-			animator.SetFloat("Speed", Random.Range(0f, 1f));
-		}
+		Utils.RandomiseAnimationSpeed(choiceSlots);
 
 		gameMusic = GameObject.Find("GameMusic");
 
-		sounds = PlayerPrefs.GetInt("sounds", 1) == 1;
-		if (!sounds)
+		if (!Utils.sounds)
 		{
 			ToggleMesh(choiceSlots[1].GetComponent<MeshFilter>(), "sounds");
 		}
-		music = PlayerPrefs.GetInt("music", 1) == 1;
-		if (!music)
+		if (!Utils.music)
 		{
 			ToggleMesh(choiceSlots[2].GetComponent<MeshFilter>(), "music");
 		}
-		movingBackground = PlayerPrefs.GetInt("moving_background", 1) == 1;
-		if (!movingBackground)
+		if (!Utils.movingBackground)
 		{
 			ToggleMesh(choiceSlots[3].GetComponent<MeshFilter>(), "moving_background");
 		}
@@ -68,47 +52,27 @@ public class Settings : MonoBehaviour
 
 	void OnGUI()
 	{
-		if (once && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-		{
-			Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-			RaycastHit hit;
-			
-			if (Physics.Raycast(ray, out hit))
+		Utils.DetectTouch((GameObject gameObject) => {
+			MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
+			if (choiceSlots[0] == gameObject)
 			{
-				once = false;
-				if (sounds)
-				{
-					clickAudio.Play();
-				}
-				Animator animator = hit.collider.GetComponent<Animator>();
-				MeshFilter meshFilter = animator.gameObject.GetComponent<MeshFilter>();
-				if (choiceSlots[0] == animator.gameObject)
-				{
-					fader.Stop(() => Application.LoadLevel("menu"));
-				}
-				else if (choiceSlots[1] == animator.gameObject)
-				{
-					sounds = ToggleMesh(meshFilter, "sounds");
-				}
-				else if (choiceSlots[2] == animator.gameObject)
-				{
-					music = ToggleMesh(meshFilter, "music");
-				}
-				else if (choiceSlots[3] == animator.gameObject)
-				{
-					movingBackground = ToggleMesh(meshFilter, "moving_background");
-				}
+				Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
+				fader.Stop(() => Application.LoadLevel("menu"));
+				enabled = false;
 			}
-		}
+			else if (choiceSlots[1] == gameObject)
+			{
+				Utils.sounds = ToggleMesh(meshFilter, "sounds");
+			}
+			else if (choiceSlots[2] == gameObject)
+			{
+				Utils.music = ToggleMesh(meshFilter, "music");
+				gameMusic.GetComponent<AudioSource>().mute = !Utils.music;
+			}
+			else if (choiceSlots[3] == gameObject)
+			{
+				Utils.movingBackground = ToggleMesh(meshFilter, "moving_background");
+			}
+		});
 	}
-	
-    void Update()
-    {
-		if (gameMusic)
-		{
-			gameMusic.GetComponent<AudioSource>().mute = !music;
-		}
-
-		once = Input.touchCount == 0;
-    }
 }

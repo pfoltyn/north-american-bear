@@ -6,36 +6,31 @@ using System.Collections.Generic;
 public class MovingBackground : MonoBehaviour
 {
 	public Texture[] textures;
-	
-	private float counter;
-	private float scrollSpeedY;
-	private float scrollSpeedX;
-	private Renderer bgRenderer;
 
-	private void MoveBackground()
+	private IEnumerator MoveBackground()
 	{
-		float offsetY = Mathf.Sin(2 * Mathf.PI * counter * scrollSpeedY);
-		float offsetX = Mathf.Cos(2 * Mathf.PI * counter * scrollSpeedX);
-		bgRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
-		bgRenderer.material.mainTextureScale = new Vector2(3 + offsetY / 2, 3 + offsetX / 2);
-		counter += Time.deltaTime;
+		float scrollSpeedY = 0.02f;
+		float scrollSpeedX = 0.02f;
+		float counter = 0f;
+		float offsetX = 0f;
+		float offsetY = 0f;
+		Renderer bgRenderer = GetComponent<Renderer>();
+
+		bgRenderer.material.mainTexture = textures[(int)Time.time % textures.Length];
+
+		for (;;)
+		{
+			offsetY = Mathf.Sin(2 * Mathf.PI * counter * scrollSpeedY);
+			offsetX = Mathf.Cos(2 * Mathf.PI * counter * scrollSpeedX);
+			bgRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
+			bgRenderer.material.mainTextureScale = new Vector2(3 + offsetY / 2, 3 + offsetX / 2);
+			counter += (Utils.movingBackground) ? Time.deltaTime : 0;
+			yield return null;
+		}
 	}
 
     void Start()
     {
-		scrollSpeedY = 0.02f;
-		scrollSpeedX = 0.02f;
-		counter = 0f;
-		bgRenderer = GetComponent<Renderer>();
-		bgRenderer.material.mainTexture = textures[(int)Time.time % textures.Length];
-		MoveBackground();
-    }
-
-    void Update()
-    {
-		if (PlayerPrefs.GetInt("moving_background", 1) == 1)
-		{
-			MoveBackground();
-		}
+		StartCoroutine("MoveBackground");
     }
 }
