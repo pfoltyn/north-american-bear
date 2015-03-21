@@ -31,7 +31,7 @@ public class Utils
 		{'ć', Resources.Load("c_", typeof(Mesh)) as Mesh},
 		{'d', Resources.Load("d", typeof(Mesh)) as Mesh},
 		{'e', Resources.Load("e", typeof(Mesh)) as Mesh},
-		{'ę', Resources.Load("e_", typeof(Mesh)) as Mesh},
+		{'ę', Resources.Load("e__", typeof(Mesh)) as Mesh},
 		{'f', Resources.Load("f", typeof(Mesh)) as Mesh},
 		{'g', Resources.Load("g", typeof(Mesh)) as Mesh},
 		{'h', Resources.Load("h", typeof(Mesh)) as Mesh},
