@@ -142,9 +142,9 @@ public class MainCodeLoop : MonoBehaviour
 				word = word.Remove(word.Length - 1);
 				foreach (var slot in bigSlots)
 				{
-					if (letter == slotToLetter[slot])
+					Animator animator = slot.GetComponent<Animator>();
+					if (letter == slotToLetter[slot] && animator.GetBool("Pressed") == true)
 					{
-						Animator animator = slot.GetComponent<Animator>();
 						animator.SetBool("Pressed", false);
 						break;
 					}
