@@ -10,7 +10,7 @@ public class GameMusic : MonoBehaviour {
 			DontDestroyOnLoad(audioSource.gameObject);
 		}
 
-		GetComponent<AudioSource>().mute = PlayerPrefs.GetInt("music", 1) == 0;
-		Application.LoadLevel("menu");
+		GetComponent<AudioSource>().mute = !Utils.music;
+		Application.LoadLevel(Utils.lvlMenu);
 	}
 }

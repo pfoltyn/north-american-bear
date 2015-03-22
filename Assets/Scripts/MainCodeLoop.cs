@@ -78,10 +78,10 @@ public class MainCodeLoop : MonoBehaviour
 		word = "";
 		letterIndex = 0;
 
-		wordIndex = PlayerPrefs.GetInt(lvlName + "wordIndex", 0);
-		seed = PlayerPrefs.GetInt(lvlName + "seed", 42);
-		score = PlayerPrefs.GetInt(lvlName + "score", 0);
-		timeOffset = PlayerPrefs.GetFloat(lvlName + "time", 0f);
+		wordIndex = PlayerPrefs.GetInt(lvlName + Utils.wordId, 0);
+		seed = PlayerPrefs.GetInt(lvlName + Utils.seedId, 42);
+		score = PlayerPrefs.GetInt(lvlName + Utils.scoreId, 0);
+		timeOffset = PlayerPrefs.GetFloat(lvlName + Utils.timeId, 0f);
 		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 
 		allWords = textAssetFull.text.Split('\n');
@@ -129,7 +129,7 @@ public class MainCodeLoop : MonoBehaviour
 		int idx = System.Array.IndexOf(menuItems, hitGo);
 		switch (idx) {
 		case 0:
-			fader.Stop(() => Application.LoadLevel("menu"));
+			fader.Stop(() => Application.LoadLevel(Utils.lvlMenu));
 			enabled = false;
 			break;
 		case 1:
@@ -196,7 +196,7 @@ public class MainCodeLoop : MonoBehaviour
     void Update()
     {
 		theTime = timeOffset + Time.timeSinceLevelLoad;
-		PlayerPrefs.SetFloat(lvlName + "time", theTime);
+		PlayerPrefs.SetFloat(lvlName + Utils.timeId, theTime);
 		Utils.TimeToMesh(theTime, timeSlots);
 
 		if (letterIndex >= smallSlots.Length)
@@ -208,9 +208,9 @@ public class MainCodeLoop : MonoBehaviour
 				score++;
 				InitLetters();
 
-				PlayerPrefs.SetInt(lvlName + "wordIndex", wordIndex);
-				PlayerPrefs.SetInt(lvlName + "seed", seed);
-				PlayerPrefs.SetInt(lvlName + "score", score);
+				PlayerPrefs.SetInt(lvlName + Utils.wordId, wordIndex);
+				PlayerPrefs.SetInt(lvlName + Utils.seedId, seed);
+				PlayerPrefs.SetInt(lvlName + Utils.scoreId, score);
 
 			}
 			else
@@ -223,16 +223,16 @@ public class MainCodeLoop : MonoBehaviour
 			if (wordIndex >= scoreLimit)
 			{
 				Gameover.endScore = theTime;
-				if (PlayerPrefs.GetFloat(lvlName + "highScore", 3599.999f) > theTime)
+				if (PlayerPrefs.GetFloat(lvlName + Utils.highScoreId, Utils.minScore) > theTime)
 				{
-					PlayerPrefs.SetFloat(lvlName + "highScore", theTime);
+					PlayerPrefs.SetFloat(lvlName + Utils.highScoreId, theTime);
 				}
-				PlayerPrefs.SetInt(lvlName + "wordIndex", 0);
-				PlayerPrefs.SetInt(lvlName + "seed", Random.Range(0, 255));
-				PlayerPrefs.SetInt(lvlName + "score", 0);
-				PlayerPrefs.SetFloat(lvlName + "time", 0f);
+				PlayerPrefs.SetInt(lvlName + Utils.wordId, 0);
+				PlayerPrefs.SetInt(lvlName + Utils.seedId, Random.Range(0, Utils.maxSeed));
+				PlayerPrefs.SetInt(lvlName + Utils.scoreId, 0);
+				PlayerPrefs.SetFloat(lvlName + Utils.timeId, 0f);
 
-				fader.Stop(() => Application.LoadLevel("gameover"));
+				fader.Stop(() => Application.LoadLevel(Utils.lvlGameover));
 				enabled = false;
 			}
 		}
@@ -242,7 +242,7 @@ public class MainCodeLoop : MonoBehaviour
 	{
 		if (score == 0)
 		{
-			PlayerPrefs.SetFloat(lvlName + "time", 0f);
+			PlayerPrefs.SetFloat(lvlName + Utils.timeId, 0f);
 		}
 		PlayerPrefs.Save();
 	}

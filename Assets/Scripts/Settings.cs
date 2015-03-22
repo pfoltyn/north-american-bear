@@ -19,15 +19,15 @@ public class Settings : MonoBehaviour
 
 		if (!Utils.sounds)
 		{
-			ToggleMesh(choiceSlots[1].GetComponent<MeshFilter>(), "sounds");
+			ToggleMesh(choiceSlots[1].GetComponent<MeshFilter>(), Utils.soundsId);
 		}
 		if (!Utils.music)
 		{
-			ToggleMesh(choiceSlots[2].GetComponent<MeshFilter>(), "music");
+			ToggleMesh(choiceSlots[2].GetComponent<MeshFilter>(), Utils.musicId);
 		}
 		if (!Utils.movingBackground)
 		{
-			ToggleMesh(choiceSlots[3].GetComponent<MeshFilter>(), "moving_background");
+			ToggleMesh(choiceSlots[3].GetComponent<MeshFilter>(), Utils.movBgId);
 		}
     }
 
@@ -57,21 +57,21 @@ public class Settings : MonoBehaviour
 			if (choiceSlots[0] == gameObject)
 			{
 				Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
-				fader.Stop(() => Application.LoadLevel("menu"));
+				fader.Stop(() => Application.LoadLevel(Utils.lvlMenu));
 				enabled = false;
 			}
 			else if (choiceSlots[1] == gameObject)
 			{
-				Utils.sounds = ToggleMesh(meshFilter, "sounds");
+				Utils.sounds = ToggleMesh(meshFilter, Utils.soundsId);
 			}
 			else if (choiceSlots[2] == gameObject)
 			{
-				Utils.music = ToggleMesh(meshFilter, "music");
+				Utils.music = ToggleMesh(meshFilter, Utils.musicId);
 				gameMusic.GetComponent<AudioSource>().mute = !Utils.music;
 			}
 			else if (choiceSlots[3] == gameObject)
 			{
-				Utils.movingBackground = ToggleMesh(meshFilter, "moving_background");
+				Utils.movingBackground = ToggleMesh(meshFilter, Utils.movBgId);
 			}
 		});
 	}

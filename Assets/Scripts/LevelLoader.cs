@@ -16,7 +16,7 @@ public class LevelLoader : MonoBehaviour
 	
     void Start()
     {
-		highscore = PlayerPrefs.GetFloat(levelToLoad + "highScore", 3599.999f);
+		highscore = PlayerPrefs.GetFloat(levelToLoad + Utils.highScoreId, Utils.minScore);
 		titleMeshFilter.mesh = titleMesh;
 		Utils.RandomiseAnimationSpeed(choiceSlots);
 		Utils.TimeToMesh(highscore, scoreSlots);
@@ -28,14 +28,14 @@ public class LevelLoader : MonoBehaviour
 			Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 			if (choiceSlots[0] == gameObject)
 			{
-				fader.Stop(() => Application.LoadLevel("menu"));
+				fader.Stop(() => Application.LoadLevel(Utils.lvlMenu));
 			}
 			else if (choiceSlots[1] == gameObject)
 			{
-				PlayerPrefs.SetInt(levelToLoad + "wordIndex", 0);
-				PlayerPrefs.SetInt(levelToLoad + "seed", Random.Range(0, 255));
-				PlayerPrefs.SetInt(levelToLoad + "score", 0);
-				PlayerPrefs.SetFloat(levelToLoad + "time", 0f);
+				PlayerPrefs.SetInt(levelToLoad + Utils.wordId, 0);
+				PlayerPrefs.SetInt(levelToLoad + Utils.seedId, Random.Range(0, Utils.maxSeed));
+				PlayerPrefs.SetInt(levelToLoad + Utils.scoreId, 0);
+				PlayerPrefs.SetFloat(levelToLoad + Utils.timeId, 0f);
 				fader.Stop(() => Application.LoadLevel(levelToLoad));
 			}
 			else if (choiceSlots[2] == gameObject)

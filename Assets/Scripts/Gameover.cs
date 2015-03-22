@@ -16,7 +16,7 @@ public class Gameover : MonoBehaviour
 
     void Start()
     {
-		highscore = PlayerPrefs.GetFloat(LevelLoader.levelToLoad + "highScore", 3599.999f);
+		highscore = PlayerPrefs.GetFloat(LevelLoader.levelToLoad + Utils.highScoreId, Utils.minScore);
 		titleMeshFilter.mesh = LevelLoader.titleMesh;
 		Utils.RandomiseAnimationSpeed(choiceSlots);
 		Utils.TimeToMesh(highscore, recordSlots);
@@ -30,7 +30,7 @@ public class Gameover : MonoBehaviour
 	void OnGUI()
 	{
 		Utils.DetectTouch((GameObject gameObject) => {
-			string levelToLoad = "menu";
+			string levelToLoad = Utils.lvlMenu;
 			if (choiceSlots[0] != gameObject)
 			{
 				levelToLoad = LevelLoader.levelToLoad;

@@ -17,7 +17,8 @@ public class MovingBackground : MonoBehaviour
 		Renderer bgRenderer = GetComponent<Renderer>();
 		Color addMe = new Color(.5f, .5f, .5f, 0f);
 		Color[] colorArray = new Color[]{
-			Color.blue + addMe, Color.cyan + addMe, Color.magenta + addMe, Color.green + addMe, Color.red + addMe, Color.yellow + addMe
+			Color.blue + addMe, Color.cyan + addMe, Color.magenta + addMe,
+			Color.green + addMe, Color.red + addMe, Color.yellow + addMe
 		};
 		Mesh mesh = GetComponent<MeshFilter>().mesh;
 		Vector2[] uv = mesh.uv;
@@ -61,6 +62,6 @@ public class MovingBackground : MonoBehaviour
 
     void Start()
     {
-		StartCoroutine("MoveBackground");
+		StartCoroutine(MoveBackground());
     }
 }

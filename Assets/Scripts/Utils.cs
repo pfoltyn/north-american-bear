@@ -5,13 +5,34 @@ using System.Collections.Generic;
 
 public class Utils
 {
+	public const int maxSeed = 65535;
+	public const float minScore = 3599.999f;
+
+	public const string highScoreId = "highScore";
+	public const string scoreId = "score";
+	public const string timeId = "time";
+	public const string seedId = "seed";
+	public const string wordId = "wordIndex";
+
+	public const string musicId = "music";
+	public const string movBgId = "moving_background";
+	public const string soundsId = "sounds";
+
+	public const string lvlMenu = "menu";
+	public const string lvl4 = "4letters";
+	public const string lvl5e = "5letters_easy";
+	public const string lvl5 = "5letters";
+	public const string lvlSettings = "settings";
+	public const string lvlLoader = "level_loader";
+	public const string lvlGameover = "gameover";
+
 	public delegate void OnTouch(GameObject gameObject);
 	private static bool once = true;
 
-	public static bool music = PlayerPrefs.GetInt("music", 1) == 1;
-	public static bool movingBackground = PlayerPrefs.GetInt("moving_background", 1) == 1;
-	public static bool sounds = PlayerPrefs.GetInt("sounds", 1) == 1;
-	
+	public static bool music = PlayerPrefs.GetInt(musicId, 1) == 1;
+	public static bool movingBackground = PlayerPrefs.GetInt(movBgId, 1) == 1;
+	public static bool sounds = PlayerPrefs.GetInt(soundsId, 1) == 1;
+
 	public static Dictionary<char, Mesh> letterToMesh = new Dictionary<char, Mesh>(){
 		{'0', Resources.Load("0", typeof(Mesh)) as Mesh},
 		{'1', Resources.Load("1", typeof(Mesh)) as Mesh},
