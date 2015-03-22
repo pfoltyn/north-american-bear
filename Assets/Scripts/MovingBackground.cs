@@ -15,8 +15,9 @@ public class MovingBackground : MonoBehaviour
 		float offsetX = 0f;
 		float offsetY = 0f;
 		Renderer bgRenderer = GetComponent<Renderer>();
+		Color addMe = new Color(.5f, .5f, .5f, 0f);
 		Color[] colorArray = new Color[]{
-			Color.blue, Color.cyan, Color.magenta, Color.green, Color.red, Color.yellow
+			Color.blue + addMe, Color.cyan + addMe, Color.magenta + addMe, Color.green + addMe, Color.red + addMe, Color.yellow + addMe
 		};
 		Mesh mesh = GetComponent<MeshFilter>().mesh;
 		Vector2[] uv = mesh.uv;
@@ -32,19 +33,17 @@ public class MovingBackground : MonoBehaviour
 		{
 			currentColor0 = Color.Lerp(currentColor0, colorArray[(colorIndex0 + 1) % colorArray.Length], Time.deltaTime);
 			currentColor1 = Color.Lerp(currentColor1, colorArray[(colorIndex1 + 1) % colorArray.Length], Time.deltaTime);
-			if ((Mathf.Abs(currentColor1.r - colorArray[(colorIndex1 + 1) % colorArray.Length].r) < 0.01f) &&
-			    (Mathf.Abs(currentColor1.g - colorArray[(colorIndex1 + 1) % colorArray.Length].g) < 0.01f) &&
-			    (Mathf.Abs(currentColor1.b - colorArray[(colorIndex1 + 1) % colorArray.Length].b) < 0.01f))
+			if ((Mathf.Abs(currentColor1.r - colorArray[(colorIndex1 + 1) % colorArray.Length].r) < 0.1f) &&
+			    (Mathf.Abs(currentColor1.g - colorArray[(colorIndex1 + 1) % colorArray.Length].g) < 0.1f) &&
+			    (Mathf.Abs(currentColor1.b - colorArray[(colorIndex1 + 1) % colorArray.Length].b) < 0.1f))
 			{
-				currentColor1 = colorArray[(colorIndex1 + 1) % colorArray.Length];
-				colorIndex1++;
+				colorIndex1 = Random.Range(0, colorArray.Length);
 			}
-			if ((Mathf.Abs(currentColor0.r - colorArray[(colorIndex0 + 1) % colorArray.Length].r) < 0.01f) &&
-			    (Mathf.Abs(currentColor0.g - colorArray[(colorIndex0 + 1) % colorArray.Length].g) < 0.01f) &&
-			 	(Mathf.Abs(currentColor0.b - colorArray[(colorIndex0 + 1) % colorArray.Length].b) < 0.01f))
+			if ((Mathf.Abs(currentColor0.r - colorArray[(colorIndex0 + 1) % colorArray.Length].r) < 0.1f) &&
+			    (Mathf.Abs(currentColor0.g - colorArray[(colorIndex0 + 1) % colorArray.Length].g) < 0.1f) &&
+			 	(Mathf.Abs(currentColor0.b - colorArray[(colorIndex0 + 1) % colorArray.Length].b) < 0.1f))
 			{
-				currentColor0 = colorArray[(colorIndex0 + 1) % colorArray.Length];
-				colorIndex0++;
+				colorIndex0 = Random.Range(0, colorArray.Length);
 			}
 			for (int i = 0; i < uv.Length; i++)
 				colors[i] = Color.Lerp(currentColor0, currentColor1, uv[i].x);
