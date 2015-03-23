@@ -32,10 +32,7 @@ public class LevelLoader : MonoBehaviour
 			}
 			else if (choiceSlots[1] == gameObject)
 			{
-				PlayerPrefs.SetInt(levelToLoad + Utils.wordId, 0);
-				PlayerPrefs.SetInt(levelToLoad + Utils.seedId, Random.Range(0, Utils.maxSeed));
-				PlayerPrefs.SetInt(levelToLoad + Utils.scoreId, 0);
-				PlayerPrefs.SetFloat(levelToLoad + Utils.timeId, 0f);
+				Utils.NewGame(Utils.minScore, levelToLoad);
 				fader.Stop(() => Application.LoadLevel(levelToLoad));
 			}
 			else if (choiceSlots[2] == gameObject)

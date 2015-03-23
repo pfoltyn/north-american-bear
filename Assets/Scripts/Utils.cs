@@ -153,6 +153,19 @@ public class Utils
 		}
 	}
 
+	public static void NewGame(float time, string lvlName)
+	{
+		if (PlayerPrefs.GetFloat(lvlName + highScoreId, minScore) > time)
+		{
+			PlayerPrefs.SetFloat(lvlName + highScoreId, time);
+		}
+		PlayerPrefs.SetInt(lvlName + wordId, 0);
+		PlayerPrefs.SetInt(lvlName + seedId, Random.Range(0, maxSeed));
+		PlayerPrefs.SetInt(lvlName + scoreId, 0);
+		PlayerPrefs.SetFloat(lvlName + timeId, 0f);
+		PlayerPrefs.Save();
+	}
+
 	public static void ShowAdds(string levelToLoad)
 	{
 		float adsTime = PlayerPrefs.GetFloat(adsTimeId, 0f);
