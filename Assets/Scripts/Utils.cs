@@ -13,7 +13,8 @@ public class Utils
 	public const string timeId = "time";
 	public const string seedId = "seed";
 	public const string wordId = "wordIndex";
-
+	
+	public const string adsTimeId = "adverts";
 	public const string musicId = "music";
 	public const string movBgId = "moving_background";
 	public const string soundsId = "sounds";
@@ -113,7 +114,7 @@ public class Utils
 			
 			if (Physics.Raycast(ray, out hit))
 			{
-				Utils.PlayClick();
+				PlayClick();
 				onTouchDelegate(hit.collider.gameObject);
 			}
 		}
@@ -150,5 +151,23 @@ public class Utils
 			Animator animator = gameObject.GetComponent<Animator>();
 			animator.SetFloat("Speed", Random.Range(0f, 1f));
 		}
+	}
+
+	public static void ShowAdds(string levelToLoad)
+	{
+		float adsTime = PlayerPrefs.GetFloat(adsTimeId, 0f);
+		if (adsTime > Time.time)
+		{
+			adsTime = Time.time;
+			PlayerPrefs.SetFloat(adsTimeId, adsTime);
+		}
+		if ((levelToLoad != lvlSettings) &&
+		    (levelToLoad != lvlMenu) &&
+		    (Mathf.Abs(Time.time - adsTime) > 60f))
+		{
+			PlayerPrefs.SetFloat(adsTimeId, Time.time);
+			UnityAdsHelper.ShowAd();
+		}
+		PlayerPrefs.Save();
 	}
 }

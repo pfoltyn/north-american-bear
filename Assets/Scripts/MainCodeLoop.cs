@@ -22,6 +22,7 @@ public class MainCodeLoop : MonoBehaviour
 	private float timeOffset;
 	private Fader fader;
 	private string lvlName;
+	private bool pause;
 
 	private int wordIndex;
 	private int seed;
@@ -74,6 +75,7 @@ public class MainCodeLoop : MonoBehaviour
 
     void Start()
     {
+		pause = true;
 		lvlName = LevelLoader.levelToLoad;
 		word = "";
 		letterIndex = 0;
@@ -176,6 +178,7 @@ public class MainCodeLoop : MonoBehaviour
 	void OnGUI()
 	{
 		Utils.DetectTouch((GameObject gameObject) => {
+			pause = false;
 			Animator animator = gameObject.GetComponent<Animator>();
 		    if (menuItems.Contains(gameObject))
 			{
@@ -195,7 +198,14 @@ public class MainCodeLoop : MonoBehaviour
 
     void Update()
     {
-		theTime = timeOffset + Time.timeSinceLevelLoad;
+		if (!pause)
+		{
+			theTime = timeOffset + Time.timeSinceLevelLoad;
+		}
+		else
+		{
+			timeOffset = -Time.timeSinceLevelLoad;;
+		}
 		PlayerPrefs.SetFloat(lvlName + Utils.timeId, theTime);
 		Utils.TimeToMesh(theTime, timeSlots);
 

@@ -47,7 +47,10 @@ public class MainMenu : MonoBehaviour
 			}
 
 			Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
-			fader.Stop(() => Application.LoadLevel(levelToLoad));
+			fader.Stop(() => {
+				Utils.ShowAdds(levelToLoad);
+				Application.LoadLevel(levelToLoad);
+			});
 
 			this.enabled = false;
 		});
