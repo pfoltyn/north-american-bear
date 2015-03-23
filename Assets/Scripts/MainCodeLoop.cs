@@ -81,7 +81,7 @@ public class MainCodeLoop : MonoBehaviour
 		letterIndex = 0;
 
 		wordIndex = PlayerPrefs.GetInt(lvlName + Utils.wordId, 0);
-		seed = PlayerPrefs.GetInt(lvlName + Utils.seedId, 42);
+		seed = PlayerPrefs.GetInt(lvlName + Utils.seedId, Random.Range(0, Utils.maxSeed));
 		score = PlayerPrefs.GetInt(lvlName + Utils.scoreId, 0);
 		timeOffset = PlayerPrefs.GetFloat(lvlName + Utils.timeId, 0f);
 		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
@@ -228,7 +228,13 @@ public class MainCodeLoop : MonoBehaviour
 			{
 				Utils.PlaySuccess();
 				wordIndex = (wordIndex + 1) % scoreLimit;
-				score++;
+				score = (score + 1) % scoreLimit;
+
+				if (wordIndex == 0)
+				{
+					GameHasEnded(theTime);
+				}
+
 				InitLetters();
 
 				PlayerPrefs.SetInt(lvlName + Utils.wordId, wordIndex);
@@ -241,11 +247,6 @@ public class MainCodeLoop : MonoBehaviour
 			}
 
 			ResetPlayersGuess();
-
-			if (wordIndex >= scoreLimit)
-			{
-				GameHasEnded(theTime);
-			}
 		}
     }
 
