@@ -160,9 +160,9 @@ public class Utils
 			PlayerPrefs.SetFloat(lvlName + highScoreId, time);
 		}
 		PlayerPrefs.SetInt(lvlName + wordId, 0);
-		PlayerPrefs.SetInt(lvlName + seedId, Random.Range(0, maxSeed));
 		PlayerPrefs.SetInt(lvlName + scoreId, 0);
 		PlayerPrefs.SetFloat(lvlName + timeId, 0f);
+		PlayerPrefs.SetInt(seedId, PlayerPrefs.GetInt(seedId, 0) + 1);
 		PlayerPrefs.Save();
 	}
 

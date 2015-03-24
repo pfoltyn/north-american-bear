@@ -80,8 +80,8 @@ public class MainCodeLoop : MonoBehaviour
 		word = "";
 		letterIndex = 0;
 
+		seed = PlayerPrefs.GetInt(Utils.seedId, 0);
 		wordIndex = PlayerPrefs.GetInt(lvlName + Utils.wordId, 0);
-		seed = PlayerPrefs.GetInt(lvlName + Utils.seedId, Random.Range(0, Utils.maxSeed));
 		score = PlayerPrefs.GetInt(lvlName + Utils.scoreId, 0);
 		timeOffset = PlayerPrefs.GetFloat(lvlName + Utils.timeId, 0f);
 		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
@@ -237,8 +237,8 @@ public class MainCodeLoop : MonoBehaviour
 
 				InitLetters();
 
+				PlayerPrefs.SetInt(Utils.seedId, seed + 1);
 				PlayerPrefs.SetInt(lvlName + Utils.wordId, wordIndex);
-				PlayerPrefs.SetInt(lvlName + Utils.seedId, seed);
 				PlayerPrefs.SetInt(lvlName + Utils.scoreId, score);
 			}
 			else
