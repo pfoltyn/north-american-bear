@@ -10,6 +10,11 @@ public class MainMenu : MonoBehaviour
 	public GameObject[] time1;
 	public GameObject[] time2;
 
+	void Awake()
+	{
+		Fader.FadeIn();
+	}
+
     void Start()
     {
 		Utils.RandomiseAnimationSpeed(choiceSlots);
@@ -46,9 +51,8 @@ public class MainMenu : MonoBehaviour
 				levelToLoad = Utils.lvlLoader;
 			}
 
-			Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
-			fader.Stop(() => {
-				Utils.ShowAdds(levelToLoad);
+			Fader.FadeOut(() => {
+				UnityAdsHelper.ShowAdds(levelToLoad);
 				Application.LoadLevel(levelToLoad);
 			});
 

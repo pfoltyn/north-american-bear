@@ -7,6 +7,30 @@ public class Fireworks : MonoBehaviour {
 	private float closestDistance = 5.0f;
 	private float furthestDistance = 9.0f;
 	private bool once = true;
+	private bool fireAtWill = false;
+
+	private static GameObject fireworks;
+
+	void Awake()
+	{
+		fireworks = GameObject.Find("Fireworks");
+	}
+
+	public static void FireAtWill()
+	{
+		if (fireworks)
+		{
+			fireworks.GetComponent<Fireworks>().FireAtWillInternal();
+		}
+	}
+	
+	public static void HoldYourFire()
+	{
+		if (fireworks)
+		{
+			fireworks.GetComponent<Fireworks>().HoldYourFireInternal();
+		}
+	}
 
 	IEnumerator ShootFirework(Vector2 touchPosition)
 	{
@@ -18,16 +42,23 @@ public class Fireworks : MonoBehaviour {
 
 	IEnumerator IndependenceDay()
 	{
-		for (;;)
+		while (fireAtWill)
 		{
 			Vector2 point = new Vector2(Random.Range(10f, Screen.width - 10f), Random.Range(100f, Screen.height - 10f));
 			yield return StartCoroutine(ShootFirework(point));
 		}
+		yield break;
 	}
 
-	public void FireAtWill()
+	private void FireAtWillInternal()
 	{
+		fireAtWill = true;
 		StartCoroutine(IndependenceDay());
+	}
+
+	private void HoldYourFireInternal()
+	{
+		fireAtWill = false;
 	}
 
 	void OnGUI()

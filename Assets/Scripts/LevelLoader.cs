@@ -13,7 +13,12 @@ public class LevelLoader : MonoBehaviour
 	public MeshFilter titleMeshFilter;
 
 	private float highscore;
-	
+
+	void Awake()
+	{
+		Fader.FadeIn();
+	}
+
     void Start()
     {
 		highscore = PlayerPrefs.GetFloat(levelToLoad + Utils.highScoreId, Utils.minScore);
@@ -25,19 +30,18 @@ public class LevelLoader : MonoBehaviour
 	void OnGUI()
 	{
 		Utils.DetectTouch((GameObject gameObject) => {
-			Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 			if (choiceSlots[0] == gameObject)
 			{
-				fader.Stop(() => Application.LoadLevel(Utils.lvlMenu));
+				Fader.FadeOut(() => Application.LoadLevel(Utils.lvlMenu));
 			}
 			else if (choiceSlots[1] == gameObject)
 			{
 				Utils.NewGame(Utils.minScore, levelToLoad);
-				fader.Stop(() => Application.LoadLevel(levelToLoad));
+				Fader.FadeOut(() => Application.LoadLevel(levelToLoad));
 			}
 			else if (choiceSlots[2] == gameObject)
 			{
-				fader.Stop(() => Application.LoadLevel(levelToLoad));
+				Fader.FadeOut(() => Application.LoadLevel(levelToLoad));
 			}
 			enabled = false;
 		});

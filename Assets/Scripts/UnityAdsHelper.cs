@@ -6,6 +6,8 @@ using UnityEngine.Advertisements;
 
 public class UnityAdsHelper : MonoBehaviour
 {
+	private const string adsTimeId = "adverts";
+
 	public string iosGameID = "24300";
 	public string androidGameID = "24299";
 	
@@ -16,6 +18,24 @@ public class UnityAdsHelper : MonoBehaviour
 	public bool showErrorLogs = true;
 
 #if UNITY_IOS || UNITY_ANDROID
+	
+	public static void ShowAdds(string levelToLoad)
+	{
+		float adsTime = PlayerPrefs.GetFloat(adsTimeId, 0f);
+		if (adsTime > Time.time)
+		{
+			adsTime = Time.time;
+			PlayerPrefs.SetFloat(adsTimeId, adsTime);
+		}
+		if ((levelToLoad != Utils.lvlSettings) &&
+		    (levelToLoad != Utils.lvlMenu) &&
+		    (Mathf.Abs(Time.time - adsTime) > 60f))
+		{
+			PlayerPrefs.SetFloat(adsTimeId, Time.time);
+			UnityAdsHelper.ShowAd();
+		}
+		PlayerPrefs.Save();
+	}
 
 	//--- Unity Ads Setup and Initialization
 

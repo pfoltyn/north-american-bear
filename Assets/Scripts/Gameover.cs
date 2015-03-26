@@ -14,6 +14,11 @@ public class Gameover : MonoBehaviour
 
 	private float highscore;
 
+	void Awake()
+	{
+		Fader.FadeIn();
+	}
+
     void Start()
     {
 		highscore = PlayerPrefs.GetFloat(LevelLoader.levelToLoad + Utils.highScoreId, Utils.minScore);
@@ -23,7 +28,7 @@ public class Gameover : MonoBehaviour
 		Utils.TimeToMesh(endScore, scoreSlots);
 		if (endScore <= highscore)
 		{
-			GameObject.Find("Fireworks").GetComponent<Fireworks>().FireAtWill();
+			Fireworks.FireAtWill();
 		}
     }
 	
@@ -35,9 +40,9 @@ public class Gameover : MonoBehaviour
 			{
 				levelToLoad = LevelLoader.levelToLoad;
 			}
-			Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
-			fader.Stop(() => {
-				Utils.ShowAdds(levelToLoad);
+			Fader.FadeOut(() => {
+				Fireworks.HoldYourFire();
+				UnityAdsHelper.ShowAdds(levelToLoad);
 				Application.LoadLevel(levelToLoad);
 			});
 			enabled = false;

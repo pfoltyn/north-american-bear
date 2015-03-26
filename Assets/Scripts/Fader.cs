@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-public class Fader : MonoBehaviour {
+public class Fader : MonoBehaviour
+{
 	public delegate void OnEndDelegate();
 
 	private float fadeSpeed;
@@ -11,16 +12,46 @@ public class Fader : MonoBehaviour {
 	private Image image;
 	private OnEndDelegate onEnd;
 
-	void Start()
+	private static GameObject fader;
+
+	void Awake()
 	{
-		GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height * 2);
-		fadeSpeed = 4.0f;
-		sceneEnding = false;
-		sceneStarting = true;
-		image = GetComponent<Image>();
+		fader = GameObject.Find("Fader");
 	}
 
-	public void Stop(OnEndDelegate onEnd)
+	public static void FadeIn()
+	{
+		if (fader)
+		{
+			fader.GetComponent<Fader>().FadeInInternal();
+		}
+	}
+	
+	public static void FadeOut(OnEndDelegate onEnd)
+	{
+		if (fader)
+		{
+			fader.GetComponent<Fader>().FadeOutInternal(onEnd);
+		}
+	}
+
+	void Start()
+	{
+		fadeSpeed = 4.0f;
+		sceneEnding = false;
+		sceneStarting = false;
+		image = GetComponent<Image>();
+		onEnd = null;
+	}
+
+	private void FadeInInternal()
+	{
+		sceneEnding = false;
+		sceneStarting = true;
+		image.enabled = true;
+	}
+
+	private void FadeOutInternal(OnEndDelegate onEnd)
 	{
 		sceneStarting = false;
 		sceneEnding = true;
@@ -47,6 +78,7 @@ public class Fader : MonoBehaviour {
 			{
 				image.color = Color.black;
 				sceneEnding = false;
+
 				onEnd();
 			}
 		}

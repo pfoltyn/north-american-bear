@@ -20,7 +20,6 @@ public class MainCodeLoop : MonoBehaviour
 	private string word;
 	private int letterIndex;
 	private float timeOffset;
-	private Fader fader;
 	private string lvlName;
 	private bool pause;
 
@@ -61,16 +60,21 @@ public class MainCodeLoop : MonoBehaviour
 		scoreSlots[3].GetComponent<MeshFilter>().mesh = Utils.letterToMesh[(char)('0' + scoreLimit % 10)];
 	}
 
-	private void Reshuffle(string[] texts)
+	private void Reshuffle()
 	{
 		Random.seed = seed;
-		for (int t = 0; t < texts.Length; t++ )
+		for (int t = 0; t < words.Length; t++)
 		{
-			string tmp = texts[t];
-			int r = Random.Range(t, texts.Length);
-			texts[t] = texts[r];
-			texts[r] = tmp;
+			string tmp = words[t];
+			int r = Random.Range(t, words.Length);
+			words[t] = words[r];
+			words[r] = tmp;
 		}
+	}
+
+	void Awake()
+	{
+		Fader.FadeIn();
 	}
 
     void Start()
@@ -84,13 +88,13 @@ public class MainCodeLoop : MonoBehaviour
 		wordIndex = PlayerPrefs.GetInt(lvlName + Utils.wordId, 0);
 		score = PlayerPrefs.GetInt(lvlName + Utils.scoreId, 0);
 		timeOffset = PlayerPrefs.GetFloat(lvlName + Utils.timeId, 0f);
-		fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
 
 		allWords = textAssetFull.text.Split('\n');
 		allWords = allWords.Select(x => x.Trim()).ToArray();
         words = textAsset.text.Split('\n');
 		words = words.Select(x => x.Trim()).ToArray();
-		Reshuffle(words);
+		words = words.Where(x => x.Length > 0).ToArray();
+		Reshuffle();
 
 		slotToLetter = new Dictionary<GameObject, char>();
 
@@ -131,7 +135,7 @@ public class MainCodeLoop : MonoBehaviour
 		int idx = System.Array.IndexOf(menuItems, hitGo);
 		switch (idx) {
 		case 0:
-			fader.Stop(() => Application.LoadLevel(Utils.lvlMenu));
+			Fader.FadeOut(() => Application.LoadLevel(Utils.lvlMenu));
 			enabled = false;
 			break;
 		case 1:
@@ -200,7 +204,7 @@ public class MainCodeLoop : MonoBehaviour
 	{
 		Gameover.endScore = time;
 		Utils.NewGame(time, lvlName);
-		fader.Stop(() => Application.LoadLevel(Utils.lvlGameover));
+		Fader.FadeOut(() => Application.LoadLevel(Utils.lvlGameover));
 		enabled = false;
 	}
 
@@ -226,7 +230,7 @@ public class MainCodeLoop : MonoBehaviour
 		{
 			if (System.Array.IndexOf(allWords, word) >= 0)
 			{
-				Utils.PlaySuccess();
+				GameMusic.PlaySuccess();
 				wordIndex = (wordIndex + 1) % scoreLimit;
 				score = (score + 1) % scoreLimit;
 
@@ -243,7 +247,7 @@ public class MainCodeLoop : MonoBehaviour
 			}
 			else
 			{
-				Utils.PlayFail();
+				GameMusic.PlayFail();
 			}
 
 			ResetPlayersGuess();

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 public class Utils
 {
-	public const int maxSeed = 65535;
 	public const float minScore = 3599.999f;
 
 	public const string highScoreId = "highScore";
@@ -13,11 +12,6 @@ public class Utils
 	public const string timeId = "time";
 	public const string seedId = "seed";
 	public const string wordId = "wordIndex";
-	
-	public const string adsTimeId = "adverts";
-	public const string musicId = "music";
-	public const string movBgId = "moving_background";
-	public const string soundsId = "sounds";
 
 	public const string lvlMenu = "menu";
 	public const string lvl4 = "4letters";
@@ -29,10 +23,6 @@ public class Utils
 
 	public delegate void OnTouch(GameObject gameObject);
 	private static bool once = true;
-
-	public static bool music = PlayerPrefs.GetInt(musicId, 1) == 1;
-	public static bool movingBackground = PlayerPrefs.GetInt(movBgId, 1) == 1;
-	public static bool sounds = PlayerPrefs.GetInt(soundsId, 1) == 1;
 
 	public static Dictionary<char, Mesh> letterToMesh = new Dictionary<char, Mesh>(){
 		{'0', Resources.Load("0", typeof(Mesh)) as Mesh},
@@ -83,11 +73,9 @@ public class Utils
 		{'ź', Resources.Load("z__", typeof(Mesh)) as Mesh},
 		{':', Resources.Load("collon", typeof(Mesh)) as Mesh},
 		{'/', Resources.Load("slash", typeof(Mesh)) as Mesh},
+		{'\r', Resources.Load("collon", typeof(Mesh)) as Mesh},
+		{'\n', Resources.Load("slash", typeof(Mesh)) as Mesh},
 	};
-
-	private static GameObject failAudio = GameObject.Find("Fail");
-	private static GameObject successAudio = GameObject.Find("Success");
-	private static GameObject clickAudio = GameObject.Find("Click");
 
 	public static void TimeToMesh(float number, GameObject[] mesh)
 	{
@@ -114,34 +102,11 @@ public class Utils
 			
 			if (Physics.Raycast(ray, out hit))
 			{
-				PlayClick();
+				GameMusic.PlayClick();
 				onTouchDelegate(hit.collider.gameObject);
 			}
 		}
 		once = Input.touchCount == 0;
-	}
-
-	private static void PlayAudioSource(GameObject source)
-	{
-		if (source && sounds)
-		{
-			source.GetComponent<AudioSource>().Play();
-		}
-	}
-
-	public static void PlayFail()
-	{
-		PlayAudioSource(failAudio);
-	}
-
-	public static void PlaySuccess()
-	{
-		PlayAudioSource(successAudio);
-	}
-
-	public static void PlayClick()
-	{
-		PlayAudioSource(clickAudio);
 	}
 
 	public static void RandomiseAnimationSpeed(GameObject[] gameObjects)
@@ -163,24 +128,6 @@ public class Utils
 		PlayerPrefs.SetInt(lvlName + scoreId, 0);
 		PlayerPrefs.SetFloat(lvlName + timeId, 0f);
 		PlayerPrefs.SetInt(seedId, PlayerPrefs.GetInt(seedId, 0) + 1);
-		PlayerPrefs.Save();
-	}
-
-	public static void ShowAdds(string levelToLoad)
-	{
-		float adsTime = PlayerPrefs.GetFloat(adsTimeId, 0f);
-		if (adsTime > Time.time)
-		{
-			adsTime = Time.time;
-			PlayerPrefs.SetFloat(adsTimeId, adsTime);
-		}
-		if ((levelToLoad != lvlSettings) &&
-		    (levelToLoad != lvlMenu) &&
-		    (Mathf.Abs(Time.time - adsTime) > 60f))
-		{
-			PlayerPrefs.SetFloat(adsTimeId, Time.time);
-			UnityAdsHelper.ShowAd();
-		}
 		PlayerPrefs.Save();
 	}
 }

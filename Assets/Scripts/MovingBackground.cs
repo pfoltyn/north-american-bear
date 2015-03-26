@@ -5,7 +5,16 @@ using System.Collections.Generic;
 
 public class MovingBackground : MonoBehaviour
 {
+	public const string movBgId = "moving_background";
+
 	public Texture[] textures;
+
+	public static bool movingBackground;
+
+	void Awake()
+	{
+		movingBackground = PlayerPrefs.GetInt(movBgId, 1) == 1;
+	}
 
 	private IEnumerator MoveBackground()
 	{
@@ -54,7 +63,7 @@ public class MovingBackground : MonoBehaviour
 			offsetX = Mathf.Cos(2 * Mathf.PI * counter * scrollSpeedX);
 			bgRenderer.material.mainTextureOffset = new Vector2(offsetY, offsetX);
 			bgRenderer.material.mainTextureScale = new Vector2(3 + offsetY / 2, 3 + offsetX / 2);
-			counter += (Utils.movingBackground) ? Time.deltaTime : 0;
+			counter += (movingBackground) ? Time.deltaTime : 0;
 
 			yield return null;
 		}

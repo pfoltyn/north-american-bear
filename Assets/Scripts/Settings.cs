@@ -9,25 +9,26 @@ public class Settings : MonoBehaviour
 	public Mesh Empty;
 	public Mesh Ticked;
 
-	private GameObject gameMusic;
-	
+	void Awake()
+	{
+		Fader.FadeIn();
+	}
+
     void Start()
     {
 		Utils.RandomiseAnimationSpeed(choiceSlots);
 
-		gameMusic = GameObject.Find("GameMusic");
-
-		if (!Utils.sounds)
+		if (!GameMusic.sounds)
 		{
-			ToggleMesh(choiceSlots[1].GetComponent<MeshFilter>(), Utils.soundsId);
+			ToggleMesh(choiceSlots[1].GetComponent<MeshFilter>(), GameMusic.soundsId);
 		}
-		if (!Utils.music)
+		if (!GameMusic.music)
 		{
-			ToggleMesh(choiceSlots[2].GetComponent<MeshFilter>(), Utils.musicId);
+			ToggleMesh(choiceSlots[2].GetComponent<MeshFilter>(), GameMusic.musicId);
 		}
-		if (!Utils.movingBackground)
+		if (!MovingBackground.movingBackground)
 		{
-			ToggleMesh(choiceSlots[3].GetComponent<MeshFilter>(), Utils.movBgId);
+			ToggleMesh(choiceSlots[3].GetComponent<MeshFilter>(), MovingBackground.movBgId);
 		}
     }
 
@@ -56,22 +57,21 @@ public class Settings : MonoBehaviour
 			MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
 			if (choiceSlots[0] == gameObject)
 			{
-				Fader fader = GameObject.FindGameObjectWithTag("Finish").GetComponent<Fader>();
-				fader.Stop(() => Application.LoadLevel(Utils.lvlMenu));
+				Fader.FadeOut(() => Application.LoadLevel(Utils.lvlMenu));
 				enabled = false;
 			}
 			else if (choiceSlots[1] == gameObject)
 			{
-				Utils.sounds = ToggleMesh(meshFilter, Utils.soundsId);
+				GameMusic.sounds = ToggleMesh(meshFilter, GameMusic.soundsId);
 			}
 			else if (choiceSlots[2] == gameObject)
 			{
-				Utils.music = ToggleMesh(meshFilter, Utils.musicId);
-				gameMusic.GetComponent<AudioSource>().mute = !Utils.music;
+				GameMusic.music = ToggleMesh(meshFilter, GameMusic.musicId);
+				GameMusic.ChangeMusic();
 			}
 			else if (choiceSlots[3] == gameObject)
 			{
-				Utils.movingBackground = ToggleMesh(meshFilter, Utils.movBgId);
+				MovingBackground.movingBackground = ToggleMesh(meshFilter, MovingBackground.movBgId);
 			}
 		});
 	}
