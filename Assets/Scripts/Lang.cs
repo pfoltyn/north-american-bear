@@ -11,7 +11,7 @@ public class Lang
 		English
 	};
 
-	public const LanguageIdx currentLanguage = LanguageIdx.English;
+	public static readonly LanguageIdx currentLanguage;
 
 	private const string langRecordId = "lang_record_id";
 	private const string langScoreId = "lang_score_id";
@@ -32,6 +32,11 @@ public class Lang
 		{langMusicId, new[] {"muzyka", "music"}},
 		{langBgId, new[] {"ruch", "moving"}}
 	};
+
+	static Lang()
+	{
+		currentLanguage = ((Application.systemLanguage == SystemLanguage.Polish) ? LanguageIdx.Polish : LanguageIdx.English);
+	}
 
 	public static void Translate()
 	{
