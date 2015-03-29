@@ -12,6 +12,7 @@ public class MainMenu : MonoBehaviour
 
 	void Awake()
 	{
+		Lang.Translate();
 		Fader.FadeIn();
 	}
 

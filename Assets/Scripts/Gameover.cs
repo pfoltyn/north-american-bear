@@ -16,6 +16,7 @@ public class Gameover : MonoBehaviour
 
 	void Awake()
 	{
+		Lang.Translate();
 		Fader.FadeIn();
 	}
 

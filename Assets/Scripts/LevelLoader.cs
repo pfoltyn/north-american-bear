@@ -16,6 +16,7 @@ public class LevelLoader : MonoBehaviour
 
 	void Awake()
 	{
+		Lang.Translate();
 		Fader.FadeIn();
 	}
 

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 
 public class MainCodeLoop : MonoBehaviour
 {
-    public TextAsset textAsset;
-	public TextAsset textAssetFull;
+    public TextAsset[] textAsset;
+	public TextAsset[] textAssetFull;
 	public GameObject[] timeSlots;
 	public GameObject[] bigSlots;
 	public GameObject[] smallSlots;
@@ -22,6 +22,7 @@ public class MainCodeLoop : MonoBehaviour
 	private float timeOffset;
 	private string lvlName;
 	private bool pause;
+	private float pauseTime;
 
 	private int wordIndex;
 	private int seed;
@@ -79,6 +80,7 @@ public class MainCodeLoop : MonoBehaviour
 
     void Start()
     {
+		pauseTime = 0f;
 		pause = true;
 		lvlName = LevelLoader.levelToLoad;
 		word = "";
@@ -89,9 +91,9 @@ public class MainCodeLoop : MonoBehaviour
 		score = PlayerPrefs.GetInt(lvlName + Utils.scoreId, 0);
 		timeOffset = PlayerPrefs.GetFloat(lvlName + Utils.timeId, 0f);
 
-		allWords = textAssetFull.text.Split('\n');
+		allWords = textAssetFull[(int)Lang.currentLanguage].text.Split('\n');
 		allWords = allWords.Select(x => x.Trim()).ToArray();
-        words = textAsset.text.Split('\n');
+		words = textAsset[(int)Lang.currentLanguage].text.Split('\n');
 		words = words.Select(x => x.Trim()).ToArray();
 		words = words.Where(x => x.Length > 0).ToArray();
 		Reshuffle();
@@ -210,14 +212,11 @@ public class MainCodeLoop : MonoBehaviour
 
     void Update()
     {
-		if (!pause)
+		if (pause)
 		{
-			theTime = timeOffset + Time.timeSinceLevelLoad;
+			pauseTime = -Time.timeSinceLevelLoad;
 		}
-		else
-		{
-			timeOffset = -Time.timeSinceLevelLoad;;
-		}
+		theTime = pauseTime + timeOffset + Time.timeSinceLevelLoad;
 		PlayerPrefs.SetFloat(lvlName + Utils.timeId, theTime);
 		Utils.TimeToMesh(theTime, timeSlots);
 

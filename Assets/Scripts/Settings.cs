@@ -11,6 +11,7 @@ public class Settings : MonoBehaviour
 
 	void Awake()
 	{
+		Lang.Translate();
 		Fader.FadeIn();
 	}
 

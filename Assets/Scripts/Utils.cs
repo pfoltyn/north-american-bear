@@ -72,9 +72,7 @@ public class Utils
 		{'ż', Resources.Load("z_", typeof(Mesh)) as Mesh},
 		{'ź', Resources.Load("z__", typeof(Mesh)) as Mesh},
 		{':', Resources.Load("collon", typeof(Mesh)) as Mesh},
-		{'/', Resources.Load("slash", typeof(Mesh)) as Mesh},
-		{'\r', Resources.Load("collon", typeof(Mesh)) as Mesh},
-		{'\n', Resources.Load("slash", typeof(Mesh)) as Mesh},
+		{'/', Resources.Load("slash", typeof(Mesh)) as Mesh}
 	};
 
 	public static void TimeToMesh(float number, GameObject[] mesh)
